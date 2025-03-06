@@ -1,3 +1,4 @@
+use crate::game_config::GameConfig;
 use eframe::egui::{self};
 
 pub enum GameInstallApp {
@@ -7,7 +8,11 @@ pub enum GameInstallApp {
 }
 
 #[derive(Debug, Default)]
-struct SelectGameState {}
+struct SelectGameState {
+    game_code: String,
+    game_config: Option<GameConfig>,
+    install_location: String,
+}
 
 #[derive(Debug)]
 struct ConfigurePlayerState {}
@@ -19,6 +24,7 @@ struct InstallState {}
 enum Action {
     Remain,
     NextState,
+    Cancel,
 }
 
 impl GameInstallApp {
@@ -66,17 +72,57 @@ impl GameInstallApp {
         match action {
             Action::Remain => {}
             Action::NextState => self.next_state(ui),
+            Action::Cancel => ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close),
         }
     }
 }
 
 fn show_select_game_central_panel(ui: &mut egui::Ui, state: &mut SelectGameState) -> Action {
     ui.heading("Select Game");
-    if ui.button("next").clicked() {
-        Action::NextState
-    } else {
-        Action::Remain
+    ui.horizontal(|ui| {
+        let label = ui.label("Game code:");
+        ui.text_edit_singleline(&mut state.game_code)
+            .labelled_by(label.id);
+    });
+    if ui
+        .add_enabled(!state.game_code.is_empty(), egui::Button::new("Fetch"))
+        .clicked()
+    {
+        state.game_config = Some(GameConfig {
+            name: "Test game".to_owned(),
+        });
     }
+    if let Some(game_config) = &state.game_config {
+        ui.label(format!("Game name: {}", game_config.name));
+    }
+    ui.add_space(50.0);
+
+    let path_label = ui.label("Install location:");
+    ui.horizontal(|ui| {
+        ui.text_edit_singleline(&mut state.install_location)
+            .labelled_by(path_label.id);
+        if ui.button("Browse").clicked() {
+            if let Some(path) = rfd::FileDialog::new().pick_folder() {
+                state.install_location = path.display().to_string();
+            }
+        }
+    });
+
+    let mut action = Action::Remain;
+    ui.horizontal(|ui| {
+        if ui.button("Cancel").clicked() {
+            action = Action::Cancel
+        }
+
+        let next_enabled = state.game_config.is_some() && !state.install_location.is_empty();
+        if ui
+            .add_enabled(next_enabled, egui::Button::new("Next"))
+            .clicked()
+        {
+            action = Action::NextState
+        }
+    });
+    action
 }
 
 fn show_configure_player_central_panel(
@@ -102,6 +148,7 @@ fn show_install_central_panel(ui: &mut egui::Ui, state: &mut InstallState) -> Ac
 
 impl eframe::App for GameInstallApp {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+        ctx.set_pixels_per_point(2.0);
         egui::CentralPanel::default().show(ctx, |ui| self.show_central_panel(ui));
     }
 }
