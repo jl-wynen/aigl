@@ -37,7 +37,7 @@ impl GameInstallApp {
     }
 
     fn new(cc: &eframe::CreationContext<'_>) -> Self {
-        // cc.egui_ctx.style_mut(set_style);
+        cc.egui_ctx.style_mut(crate::theme::set_style);
         Self::SelectGame(SelectGameState::default())
     }
 
