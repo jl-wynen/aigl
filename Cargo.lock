@@ -881,15 +881,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "egui-test"
-version = "0.1.0"
-dependencies = [
- "eframe",
- "egui-phosphor",
- "rfd",
-]
-
-[[package]]
 name = "egui-wgpu"
 version = "0.31.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1189,6 +1180,15 @@ dependencies = [
  "pin-project-lite",
  "pin-utils",
  "slab",
+]
+
+[[package]]
+name = "game-installer"
+version = "0.1.0"
+dependencies = [
+ "eframe",
+ "egui-phosphor",
+ "rfd",
 ]
 
 [[package]]
