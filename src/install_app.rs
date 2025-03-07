@@ -36,7 +36,8 @@ struct InstallState {}
 enum Action {
     Remain,
     NextState,
-    Cancel,
+    PreviousState,
+    Exit,
 }
 
 impl GameInstallApp {
@@ -78,21 +79,40 @@ impl GameInstallApp {
         }
     }
 
+    fn previous_state(&mut self, ui: &mut egui::Ui) {
+        match self.stage {
+            Stage::SelectGame => ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close),
+            Stage::ConfigurePlayer => self.stage = Stage::SelectGame,
+            Stage::Install => self.stage = Stage::ConfigurePlayer,
+            Stage::Finished => ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close),
+        }
+    }
+
+    fn exit(&self, ui: &mut egui::Ui) {
+        ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close);
+    }
+
+    fn next_is_enabled(&self) -> bool {
+        match self.stage {
+            Stage::SelectGame => {
+                self.select_game_state.game_config.is_some()
+                    && !self.select_game_state.install_location.is_empty()
+            }
+            Stage::ConfigurePlayer => true,
+            Stage::Install | Stage::Finished => true,
+        }
+    }
+
     fn show_central_panel(&mut self, ui: &mut egui::Ui) {
-        let action = match self.stage {
+        match self.stage {
             Stage::SelectGame => self.show_select_game_central_panel(ui),
             Stage::ConfigurePlayer => self.show_configure_player_central_panel(ui),
             Stage::Install => self.show_install_central_panel(ui),
             Stage::Finished => self.show_finished_central_panel(ui),
         };
-        match action {
-            Action::Remain => {}
-            Action::NextState => self.next_state(ui),
-            Action::Cancel => ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close),
-        }
     }
 
-    fn show_select_game_central_panel(&mut self, ui: &mut egui::Ui) -> Action {
+    fn show_select_game_central_panel(&mut self, ui: &mut egui::Ui) {
         let state = &mut self.select_game_state;
 
         ui.heading("Select Game");
@@ -125,54 +145,71 @@ impl GameInstallApp {
             }
         });
 
-        let mut action = Action::Remain;
-        ui.horizontal(|ui| {
-            if ui.add(components::exit_button()).clicked() {
-                action = Action::Cancel
-            }
+        // let mut action = Action::Remain;
+        // ui.horizontal(|ui| {
+        //     if ui.add(components::exit_button()).clicked() {
+        //         action = Action::Exit
+        //     }
+        //
+        //     let next_enabled = state.game_config.is_some() && !state.install_location.is_empty();
+        //     if ui
+        //         .add_enabled(next_enabled, components::next_button())
+        //         .clicked()
+        //     {
+        //         action = Action::NextState
+        //     }
+        // });
+        // action
+    }
 
-            let next_enabled = state.game_config.is_some() && !state.install_location.is_empty();
+    fn show_configure_player_central_panel(&mut self, ui: &mut egui::Ui) {
+        ui.heading("Select player");
+    }
+
+    fn show_install_central_panel(&mut self, ui: &mut egui::Ui) {
+        ui.heading("Ready to install");
+    }
+
+    fn show_finished_central_panel(&mut self, ui: &mut egui::Ui) {
+        ui.heading("Finished");
+    }
+
+    fn show_bottom_panel(&mut self, ui: &mut egui::Ui) {
+        let show_exit_button = self.stage != Stage::Finished;
+        let show_back_button = self.stage != Stage::SelectGame;
+        let (next_button_text, next_button_icon) = match self.stage {
+            Stage::SelectGame | Stage::ConfigurePlayer => {
+                ("Next", egui_phosphor::regular::CARET_RIGHT)
+            }
+            Stage::Install => ("Install", egui_phosphor::regular::CARET_RIGHT),
+            Stage::Finished => ("Finish", egui_phosphor::regular::SIGN_OUT),
+        };
+
+        ui.horizontal(|ui| {
+            if show_exit_button && ui.add(components::exit_button()).clicked() {
+                return self.exit(ui);
+            }
+            ui.add_space(ui.available_width() / 5.0);
+            if show_back_button && ui.add(components::back_button()).clicked() {
+                return self.previous_state(ui);
+            }
             if ui
-                .add_enabled(next_enabled, components::next_button())
+                .add_enabled(
+                    self.next_is_enabled(),
+                    components::icon_button(next_button_text, next_button_icon),
+                )
                 .clicked()
             {
-                action = Action::NextState
+                self.next_state(ui);
             }
         });
-        action
-    }
-
-    fn show_configure_player_central_panel(&mut self, ui: &mut egui::Ui) -> Action {
-        ui.heading("Select player");
-        if ui.add(components::next_button()).clicked() {
-            Action::NextState
-        } else {
-            Action::Remain
-        }
-    }
-
-    fn show_install_central_panel(&mut self, ui: &mut egui::Ui) -> Action {
-        ui.heading("Ready to install");
-        if ui.button("Install").clicked() {
-            Action::NextState
-        } else {
-            Action::Remain
-        }
-    }
-
-    fn show_finished_central_panel(&mut self, ui: &mut egui::Ui) -> Action {
-        ui.heading("Finished");
-        if ui.button("Close").clicked() {
-            Action::NextState
-        } else {
-            Action::Remain
-        }
     }
 }
 
 impl eframe::App for GameInstallApp {
-    fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         ctx.set_pixels_per_point(2.0);
+        egui::TopBottomPanel::bottom("nav_buttons").show(ctx, |ui| self.show_bottom_panel(ui));
         egui::CentralPanel::default().show(ctx, |ui| self.show_central_panel(ui));
     }
 }
