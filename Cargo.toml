@@ -5,4 +5,5 @@ edition = "2021"
 
 [dependencies]
 eframe = { version = "0.31.0", features = ["default"] }
+egui-phosphor = "0.9"
 rfd = "0.15.2"

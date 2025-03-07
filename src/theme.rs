@@ -64,6 +64,16 @@ pub fn set_style(style: &mut egui::Style) {
     style.visuals.widgets.hovered.weak_bg_fill = GRASS[3];
     style.visuals.widgets.active.weak_bg_fill = GRASS[4];
 
+    style.visuals.widgets.noninteractive.bg_fill = GRAY[1];
+    style.visuals.widgets.noninteractive.fg_stroke = Stroke {
+        color: GRAY[11],
+        ..Default::default()
+    };
+    style.visuals.widgets.noninteractive.bg_stroke = Stroke {
+        color: GRAY[5],
+        width: 1.0,
+    };
+
     let stroke = Stroke {
         color: GRASS[11],
         ..Default::default()

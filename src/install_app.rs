@@ -1,6 +1,6 @@
+use crate::components;
 use crate::game_config::GameConfig;
 use eframe::egui::{self};
-use std::default;
 
 pub struct GameInstallApp {
     stage: Stage,
@@ -56,6 +56,11 @@ impl GameInstallApp {
 
     fn new(cc: &eframe::CreationContext<'_>) -> Self {
         cc.egui_ctx.style_mut(crate::theme::set_style);
+
+        let mut fonts = egui::FontDefinitions::default();
+        egui_phosphor::add_to_fonts(&mut fonts, egui_phosphor::Variant::Regular);
+        cc.egui_ctx.set_fonts(fonts);
+
         Self {
             stage: Stage::SelectGame,
             select_game_state: Default::default(),
@@ -122,13 +127,13 @@ impl GameInstallApp {
 
         let mut action = Action::Remain;
         ui.horizontal(|ui| {
-            if ui.button("Cancel").clicked() {
+            if ui.add(components::exit_button()).clicked() {
                 action = Action::Cancel
             }
 
             let next_enabled = state.game_config.is_some() && !state.install_location.is_empty();
             if ui
-                .add_enabled(next_enabled, egui::Button::new("Next"))
+                .add_enabled(next_enabled, components::next_button())
                 .clicked()
             {
                 action = Action::NextState
@@ -139,7 +144,7 @@ impl GameInstallApp {
 
     fn show_configure_player_central_panel(&mut self, ui: &mut egui::Ui) -> Action {
         ui.heading("Select player");
-        if ui.button("Next").clicked() {
+        if ui.add(components::next_button()).clicked() {
             Action::NextState
         } else {
             Action::Remain
