@@ -10,6 +10,9 @@ license.workspace = true
 
 [dependencies]
 eframe = { workspace = true }
+ron = { workspace = true }
+serde = { workspace = true }
+serde_derive = { workspace = true }
 
 [dev-dependencies]
 pretty_assertions = { workspace = true }
