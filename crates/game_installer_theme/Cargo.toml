@@ -1,0 +1,15 @@
+[package]
+name = "game_installer_theme"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+homepage.workspace = true
+repository.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+eframe = { workspace = true }
+
+[dev-dependencies]
+pretty_assertions = { workspace = true }
