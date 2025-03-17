@@ -8,15 +8,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d49c4a4f-ea20-426e-94b9-0d87bb383f6f" name="Changes" comment="Turn into workspace">
-      <change afterPath="$PROJECT_DIR$/.cargo/config.toml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crates/game_installer_theme/src/color.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crates/game_installer_theme/src/theme.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/themes/radix.ron" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crates/game_installer_theme/src/radix.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/game-installer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/game-installer.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/crates/game_installer/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer/src/install_app.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/game_installer/src/install_app.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer/src/theme.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/game_installer/src/theme.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crates/game_installer_theme/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/crates/game_installer_theme/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer_theme/src/color.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/game_installer_theme/src/color.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crates/game_installer_theme/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/game_installer_theme/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer_theme/src/theme.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/game_installer_theme/src/theme.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,24 +40,24 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "jl-wynen"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;jl-wynen&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "git@github.com:jl-wynen/game-installer.git",
-    "accountId": "25522670-1356-4fa5-87ae-86570dc50a30"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:jl-wynen/game-installer.git&quot;,
+    &quot;accountId&quot;: &quot;25522670-1356-4fa5-87ae-86570dc50a30&quot;
   }
-}]]></component>
+}</component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="rKb6qPRz" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 0
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2u2JhVEfeZFbjwNiiBRBVhHHlCJ" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -63,13 +66,17 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Cargo.Run game-installer.executor": "Run",
+    "Cargo.Run w/ dyn theme.executor": "Run",
+    "Cargo.Run w/ load theme.executor": "Run",
+    "Cargo.Run w/ static theme.executor": "Run",
     "Cargo.Test lib::tests.executor": "Run",
     "Cargo.Test theme.executor": "Run",
     "Cargo.Test theme::tests.executor": "Run",
+    "Cargo.Test theme::tests::deserialize_theme.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "/home/jl/Prog/experiments/game-installer",
+    "last_opened_file_path": "/home/jl/Prog/experiments/game-installer/crates/game_installer_theme_macros",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -83,6 +90,9 @@
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/crates/game_installer_theme_macros" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/crates/game_installer" />
@@ -92,8 +102,44 @@
     <option name="runOnTheFly" value="true" />
     <option name="tool" value="Clippy" />
   </component>
-  <component name="RunManager" selected="Cargo.Test theme">
+  <component name="RunManager" selected="Cargo.Run w/ load theme">
     <configuration name="Run game-installer" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="buildProfileId" value="dev" />
+      <option name="command" value="run --package game-installer --bin game-installer" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <option name="emulateTerminal" value="true" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Run w/ load theme" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="buildProfileId" value="dev" />
+      <option name="command" value="run --package game-installer --bin game-installer --features=load-theme" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <option name="emulateTerminal" value="true" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Run w/ static theme" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="buildProfileId" value="dev" />
       <option name="command" value="run --package game-installer --bin game-installer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -130,7 +176,26 @@
       </method>
     </configuration>
     <configuration name="Test theme" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-      <option name="command" value="test --package game_installer_theme" />
+      <option name="buildProfileId" value="test" />
+      <option name="command" value="test --package game_installer_theme --features=load" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <option name="emulateTerminal" value="true" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test theme::tests::deserialize_theme" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="buildProfileId" value="test" />
+      <option name="command" value="test --package game_installer_theme --lib theme::tests::deserialize_theme -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <envs />
       <option name="emulateTerminal" value="true" />
@@ -148,11 +213,15 @@
     </configuration>
     <list>
       <item itemvalue="Cargo.Test theme" />
+      <item itemvalue="Cargo.Run w/ load theme" />
+      <item itemvalue="Cargo.Run w/ static theme" />
+      <item itemvalue="Cargo.Test theme::tests::deserialize_theme" />
       <item itemvalue="Cargo.Run game-installer" />
       <item itemvalue="Cargo.Test lib::tests" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.Test theme::tests::deserialize_theme" />
         <item itemvalue="Cargo.Test lib::tests" />
         <item itemvalue="Cargo.Run game-installer" />
       </list>
@@ -170,6 +239,8 @@
       <option name="presentableId" value="Default" />
       <updated>1741440855544</updated>
       <workItem from="1741440857104" duration="3957000" />
+      <workItem from="1742203940773" duration="3178000" />
+      <workItem from="1742215117252" duration="1123000" />
     </task>
     <task id="LOCAL-00001" summary="Turn into workspace">
       <option name="closed" value="true" />

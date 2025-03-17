@@ -56,7 +56,8 @@ impl GameInstallApp {
     }
 
     fn new(cc: &eframe::CreationContext<'_>) -> Self {
-        cc.egui_ctx.style_mut(crate::theme::set_style);
+        // cc.egui_ctx.style_mut(crate::theme::set_theme);
+        crate::theme::set_theme(&cc.egui_ctx);
 
         let mut fonts = egui::FontDefinitions::default();
         egui_phosphor::add_to_fonts(&mut fonts, egui_phosphor::Variant::Regular);

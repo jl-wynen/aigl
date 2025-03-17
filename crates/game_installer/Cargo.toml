@@ -9,6 +9,13 @@ authors.workspace = true
 license.workspace = true
 
 [dependencies]
+game_installer_theme = { path = "../game_installer_theme" }
+
 eframe = { workspace = true }
 egui-phosphor = { workspace = true }
 rfd = { workspace = true }
+
+[features]
+load-theme = [
+    "game_installer_theme/load",
+]

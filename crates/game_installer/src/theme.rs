@@ -1,4 +1,5 @@
 use eframe::egui::{self, Color32, Stroke};
+use game_installer_theme::Theme;
 
 const GRAY: [Color32; 12] = [
     Color32::from_rgb(17, 17, 17),
@@ -57,30 +58,31 @@ const GRASS: [Color32; 12] = [
     Color32::from_rgb(194, 240, 194),
 ];
 
-pub fn set_style(style: &mut egui::Style) {
-    style.visuals.panel_fill = GRAY[1];
-
-    style.visuals.widgets.inactive.weak_bg_fill = GRASS[2];
-    style.visuals.widgets.hovered.weak_bg_fill = GRASS[3];
-    style.visuals.widgets.active.weak_bg_fill = GRASS[4];
-
-    style.visuals.widgets.noninteractive.bg_fill = GRAY[1];
-    style.visuals.widgets.noninteractive.fg_stroke = Stroke {
-        color: GRAY[11],
-        ..Default::default()
-    };
-    style.visuals.widgets.noninteractive.bg_stroke = Stroke {
-        color: GRAY[5],
-        width: 1.0,
-    };
-
-    let stroke = Stroke {
-        color: GRASS[11],
-        ..Default::default()
-    };
-    style.visuals.widgets.inactive.fg_stroke = stroke;
-    style.visuals.widgets.hovered.fg_stroke = stroke;
-    style.visuals.widgets.active.fg_stroke = stroke;
+pub fn set_theme(ctx: &egui::Context) {
+    Theme::get_selected().apply(ctx);
+    // style.visuals.panel_fill = GRAY[1];
+    //
+    // style.visuals.widgets.inactive.weak_bg_fill = GRASS[2];
+    // style.visuals.widgets.hovered.weak_bg_fill = GRASS[3];
+    // style.visuals.widgets.active.weak_bg_fill = GRASS[4];
+    //
+    // style.visuals.widgets.noninteractive.bg_fill = GRAY[1];
+    // style.visuals.widgets.noninteractive.fg_stroke = Stroke {
+    //     color: GRAY[11],
+    //     ..Default::default()
+    // };
+    // style.visuals.widgets.noninteractive.bg_stroke = Stroke {
+    //     color: GRAY[5],
+    //     width: 1.0,
+    // };
+    //
+    // let stroke = Stroke {
+    //     color: GRASS[11],
+    //     ..Default::default()
+    // };
+    // style.visuals.widgets.inactive.fg_stroke = stroke;
+    // style.visuals.widgets.hovered.fg_stroke = stroke;
+    // style.visuals.widgets.active.fg_stroke = stroke;
 }
 
 /*

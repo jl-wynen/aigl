@@ -1,22 +1,29 @@
 use eframe::egui::{Color32, ecolor::ParseHexColorError};
+use std::fmt::Formatter;
+
+#[cfg(feature = "load")]
 use serde::{
     Deserialize, Deserializer,
     de::{self, Visitor},
 };
-use std::fmt::Formatter;
 
 /// Custom color type that can be deserialized from a string.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct Color(Color32);
+pub struct Color(pub Color32);
 
 impl Color {
     pub fn from_hex(hex: &str) -> Result<Self, ParseHexColorError> {
         Color32::from_hex(hex).map(Self)
     }
+
+    pub const fn from_rgb(r: u8, g: u8, b: u8) -> Self {
+        Self(Color32::from_rgb(r, g, b))
+    }
 }
 
 // Custom deserializer for Color / Color32 because the implementation in
 // egui cannot parse hex strings directly.
+#[cfg(feature = "load")]
 impl<'de> Deserialize<'de> for Color {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -28,6 +35,7 @@ impl<'de> Deserialize<'de> for Color {
 
 struct ColorVisitor;
 
+#[cfg(feature = "load")]
 impl Visitor<'_> for ColorVisitor {
     type Value = Color;
 
@@ -48,6 +56,7 @@ mod tests {
     use super::*;
     use pretty_assertions::assert_eq;
 
+    #[cfg(feature = "load")]
     #[test]
     fn can_deserialize_color_from_ron() {
         let color_str = "\"#ff0000\"";
@@ -62,6 +71,7 @@ mod tests {
         );
     }
 
+    #[cfg(feature = "load")]
     #[test]
     fn deserialize_color_requires_hash() {
         let color_str = "\"00ff00\"";

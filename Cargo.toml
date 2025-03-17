@@ -11,6 +11,7 @@ authors = ["Jan-Lukas Wynen"]
 license = "MIT"
 
 [workspace.dependencies]
+anyhow = "1.0"
 eframe = { version = "0.31", features = ["default"] }
 egui-phosphor = "0.9"
 pretty_assertions = "1.4"

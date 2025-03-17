@@ -9,10 +9,16 @@ authors.workspace = true
 license.workspace = true
 
 [dependencies]
+anyhow = { workspace = true }
 eframe = { workspace = true }
-ron = { workspace = true }
-serde = { workspace = true }
-serde_derive = { workspace = true }
+ron = { workspace = true, optional = true }
+serde = { workspace = true, optional = true }
+serde_derive = { workspace = true, optional = true }
 
 [dev-dependencies]
 pretty_assertions = { workspace = true }
+
+[features]
+load = [
+    "dep:ron", "dep:serde", "dep:serde_derive",
+]
