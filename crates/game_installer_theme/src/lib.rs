@@ -1,4 +1,5 @@
 mod color;
+#[cfg(not(feature = "load"))]
 mod radix;
 mod theme;
 

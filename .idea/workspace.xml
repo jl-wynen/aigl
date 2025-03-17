@@ -3,30 +3,33 @@
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="ALL" />
   </component>
+  <component name="CargoProjectFeatures">
+    <cargoProject file="$PROJECT_DIR$/Cargo.toml">
+      <package file="$PROJECT_DIR$/crates/game_installer">
+        <feature name="load-theme" />
+      </package>
+    </cargoProject>
+  </component>
   <component name="CargoProjects">
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d49c4a4f-ea20-426e-94b9-0d87bb383f6f" name="Changes" comment="Turn into workspace">
-      <change afterPath="$PROJECT_DIR$/crates/game_installer_theme/src/radix.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/game-installer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/game-installer.iml" afterDir="false" />
+    <list default="true" id="d49c4a4f-ea20-426e-94b9-0d87bb383f6f" name="Changes" comment="Load theme from file">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crates/game_installer/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/crates/game_installer/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/colors.py" beforeDir="false" afterPath="$PROJECT_DIR$/colors.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crates/game_installer/src/install_app.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/game_installer/src/install_app.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crates/game_installer/src/theme.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/game_installer/src/theme.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crates/game_installer_theme/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/crates/game_installer_theme/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crates/game_installer_theme/src/color.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/game_installer_theme/src/color.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crates/game_installer_theme/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/game_installer_theme/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer_theme/src/radix.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/game_installer_theme/src/radix.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crates/game_installer_theme/src/theme.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/game_installer_theme/src/theme.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/themes/radix.ron" beforeDir="false" afterPath="$PROJECT_DIR$/resources/themes/radix.ron" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="RsBuildProfile:test" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="RsBuildProfile:dev" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -240,7 +243,7 @@
       <updated>1741440855544</updated>
       <workItem from="1741440857104" duration="3957000" />
       <workItem from="1742203940773" duration="3178000" />
-      <workItem from="1742215117252" duration="1123000" />
+      <workItem from="1742215117252" duration="5541000" />
     </task>
     <task id="LOCAL-00001" summary="Turn into workspace">
       <option name="closed" value="true" />
@@ -250,7 +253,15 @@
       <option name="project" value="LOCAL" />
       <updated>1741441457836</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Load theme from file">
+      <option name="closed" value="true" />
+      <created>1742216467193</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1742216467193</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -258,6 +269,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Turn into workspace" />
-    <option name="LAST_COMMIT_MESSAGE" value="Turn into workspace" />
+    <MESSAGE value="Load theme from file" />
+    <option name="LAST_COMMIT_MESSAGE" value="Load theme from file" />
   </component>
 </project>
