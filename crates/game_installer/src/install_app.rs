@@ -32,14 +32,6 @@ struct ConfigurePlayerState {}
 #[derive(Debug, Default)]
 struct InstallState {}
 
-#[derive(Debug)]
-enum Action {
-    Remain,
-    NextState,
-    PreviousState,
-    Exit,
-}
-
 impl GameInstallApp {
     pub fn run() {
         let options = eframe::NativeOptions {
@@ -92,17 +84,6 @@ impl GameInstallApp {
         ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close);
     }
 
-    fn next_is_enabled(&self) -> bool {
-        match self.stage {
-            Stage::SelectGame => {
-                self.select_game_state.game_config.is_some()
-                    && !self.select_game_state.install_location.is_empty()
-            }
-            Stage::ConfigurePlayer => true,
-            Stage::Install | Stage::Finished => true,
-        }
-    }
-
     fn show_central_panel(&mut self, ui: &mut egui::Ui) {
         match self.stage {
             Stage::SelectGame => self.show_select_game_central_panel(ui),
@@ -144,22 +125,6 @@ impl GameInstallApp {
                 }
             }
         });
-
-        // let mut action = Action::Remain;
-        // ui.horizontal(|ui| {
-        //     if ui.add(components::exit_button()).clicked() {
-        //         action = Action::Exit
-        //     }
-        //
-        //     let next_enabled = state.game_config.is_some() && !state.install_location.is_empty();
-        //     if ui
-        //         .add_enabled(next_enabled, components::next_button())
-        //         .clicked()
-        //     {
-        //         action = Action::NextState
-        //     }
-        // });
-        // action
     }
 
     fn show_configure_player_central_panel(&mut self, ui: &mut egui::Ui) {
@@ -175,34 +140,42 @@ impl GameInstallApp {
     }
 
     fn show_bottom_panel(&mut self, ui: &mut egui::Ui) {
-        let show_exit_button = self.stage != Stage::Finished;
-        let show_back_button = self.stage != Stage::SelectGame;
-        let (next_button_text, next_button_icon) = match self.stage {
-            Stage::SelectGame | Stage::ConfigurePlayer => {
-                ("Next", egui_phosphor::regular::CARET_RIGHT)
-            }
-            Stage::Install => ("Install", egui_phosphor::regular::CARET_RIGHT),
-            Stage::Finished => ("Finish", egui_phosphor::regular::SIGN_OUT),
+        let exit_button_spec = match self.stage {
+            Stage::Finished => components::NavExit::No,
+            Stage::Install => components::NavExit::Cancel, // TODO use Stage::Installing
+            _ => components::NavExit::Exit,
+        };
+        let back_button_spec = match self.stage {
+            // TODO use Stage::Installing
+            Stage::Finished | Stage::Install | Stage::SelectGame => components::NavBack::No,
+            _ => components::NavBack::Back,
         };
 
-        ui.horizontal(|ui| {
-            if show_exit_button && ui.add(components::exit_button()).clicked() {
-                return self.exit(ui);
-            }
-            ui.add_space(ui.available_width() / 5.0);
-            if show_back_button && ui.add(components::back_button()).clicked() {
-                return self.previous_state(ui);
-            }
-            if ui
-                .add_enabled(
-                    self.next_is_enabled(),
-                    components::icon_button(next_button_text, next_button_icon),
-                )
-                .clicked()
-            {
-                self.next_state(ui);
-            }
-        });
+        match components::navbar(
+            ui,
+            self.next_button_spec(),
+            back_button_spec,
+            exit_button_spec,
+        )
+        .clicked()
+        {
+            components::NavClicked::Next => self.next_state(ui),
+            components::NavClicked::Back => self.previous_state(ui),
+            components::NavClicked::Exit => self.exit(ui),
+            components::NavClicked::None => {}
+        }
+    }
+
+    fn next_button_spec(&self) -> components::NavNext {
+        match self.stage {
+            Stage::SelectGame => components::NavNext::Next(
+                self.select_game_state.game_config.is_some()
+                    && !self.select_game_state.install_location.is_empty(),
+            ),
+            Stage::ConfigurePlayer => components::NavNext::Next(true),
+            Stage::Install => components::NavNext::Install,
+            Stage::Finished => components::NavNext::Finish,
+        }
     }
 }
 
