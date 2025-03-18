@@ -1,5 +1,7 @@
 use super::icon_button;
+use super::widget::add_enabled_with_colors;
 use eframe::egui;
+use game_installer_theme::Theme;
 
 pub fn navbar(ui: &mut egui::Ui, next: NavNext, back: NavBack, exit: NavExit) -> NavResponse {
     let mut clicked = NavClicked::None;
@@ -86,16 +88,26 @@ pub enum NavClicked {
 }
 
 fn add_next_button(ui: &mut egui::Ui, spec: NavNext) -> egui::Response {
+    let theme = Theme::get_selected();
     match spec {
-        NavNext::Next(enabled) => ui.add_enabled(
+        NavNext::Next(enabled) => add_enabled_with_colors(
+            ui,
             enabled,
+            theme.highlight_widget_visuals(),
             icon_button("Next", egui_phosphor::regular::CARET_RIGHT),
         ),
-        NavNext::Install(enabled) => ui.add_enabled(
+        NavNext::Install(enabled) => add_enabled_with_colors(
+            ui,
             enabled,
+            theme.highlight_widget_visuals(),
             icon_button("Install", egui_phosphor::regular::CHECK),
         ),
-        NavNext::Finish => ui.add(icon_button("Finish", egui_phosphor::regular::SIGN_OUT)),
+        NavNext::Finish => add_enabled_with_colors(
+            ui,
+            true,
+            theme.highlight_widget_visuals(),
+            icon_button("Finish", egui_phosphor::regular::SIGN_OUT),
+        ),
     }
 }
 

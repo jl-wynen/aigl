@@ -4,6 +4,7 @@ use eframe::{
     egui::{self, CornerRadius, Stroke, style},
     epaint,
 };
+use std::cell::OnceCell;
 
 #[cfg_attr(feature = "load", derive(serde::Deserialize))]
 #[derive(Debug)]
@@ -17,6 +18,15 @@ pub struct Theme {
     pub stroke_width: f32,
     pub element_border_width: f32,
     pub corner_radius: u8,
+
+    #[cfg_attr(feature = "load", serde(skip))]
+    base_widget_visuals: OnceCell<style::Widgets>,
+    #[cfg_attr(feature = "load", serde(skip))]
+    highlight_widget_visuals: OnceCell<style::Widgets>,
+    #[cfg_attr(feature = "load", serde(skip))]
+    warning_widget_visuals: OnceCell<style::Widgets>,
+    #[cfg_attr(feature = "load", serde(skip))]
+    error_widget_visuals: OnceCell<style::Widgets>,
 }
 
 #[cfg_attr(feature = "load", derive(serde::Deserialize))]
@@ -49,6 +59,7 @@ impl Theme {
 
     #[cfg(feature = "load")]
     pub fn get_selected() -> Self {
+        // TODO cache
         Self::load(
             &std::path::Path::new(env!("CARGO_WORKSPACE_DIR"))
                 .join("resources")
@@ -61,6 +72,26 @@ impl Theme {
     #[cfg(not(feature = "load"))]
     pub const fn get_selected() -> &'static Self {
         &crate::radix::RADIX_THEME
+    }
+
+    pub fn base_widget_visuals(&self) -> &style::Widgets {
+        self.base_widget_visuals
+            .get_or_init(|| self.make_widgets(&self.base))
+    }
+
+    pub fn highlight_widget_visuals(&self) -> &style::Widgets {
+        self.highlight_widget_visuals
+            .get_or_init(|| self.make_widgets(&self.highlight))
+    }
+
+    pub fn warning_widget_visuals(&self) -> &style::Widgets {
+        self.warning_widget_visuals
+            .get_or_init(|| self.make_widgets(&self.warning))
+    }
+
+    pub fn error_widget_visuals(&self) -> &style::Widgets {
+        self.error_widget_visuals
+            .get_or_init(|| self.make_widgets(&self.error))
     }
 
     pub fn apply(&self, ctx: &egui::Context) {
