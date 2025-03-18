@@ -14,9 +14,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d49c4a4f-ea20-426e-94b9-0d87bb383f6f" name="Changes" comment="NavBar widget">
+    <list default="true" id="d49c4a4f-ea20-426e-94b9-0d87bb383f6f" name="Changes" comment="Proper layout for buttons">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crates/game_installer/src/components/navbar.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/game_installer/src/components/navbar.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer/src/install_app.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/game_installer/src/install_app.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -239,7 +240,7 @@
       <workItem from="1742203940773" duration="3178000" />
       <workItem from="1742215117252" duration="5688000" />
       <workItem from="1742291886890" duration="4919000" />
-      <workItem from="1742311113889" duration="1345000" />
+      <workItem from="1742311113889" duration="2329000" />
     </task>
     <task id="LOCAL-00001" summary="Turn into workspace">
       <option name="closed" value="true" />
@@ -273,7 +274,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742298350507</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Proper layout for buttons">
+      <option name="closed" value="true" />
+      <created>1742312468608</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1742312468608</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -287,6 +296,7 @@
     <MESSAGE value="Load theme from file" />
     <MESSAGE value="Apply radix theme" />
     <MESSAGE value="NavBar widget" />
-    <option name="LAST_COMMIT_MESSAGE" value="NavBar widget" />
+    <MESSAGE value="Proper layout for buttons" />
+    <option name="LAST_COMMIT_MESSAGE" value="Proper layout for buttons" />
   </component>
 </project>

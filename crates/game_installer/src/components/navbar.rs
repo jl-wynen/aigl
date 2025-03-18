@@ -47,7 +47,7 @@ pub fn navbar(ui: &mut egui::Ui, next: NavNext, back: NavBack, exit: NavExit) ->
 #[derive(Copy, Clone)]
 pub enum NavNext {
     Next(bool),
-    Install,
+    Install(bool),
     Finish,
 }
 
@@ -91,7 +91,10 @@ fn add_next_button(ui: &mut egui::Ui, spec: NavNext) -> egui::Response {
             enabled,
             icon_button("Next", egui_phosphor::regular::CARET_RIGHT),
         ),
-        NavNext::Install => ui.add(icon_button("Install", egui_phosphor::regular::CHECK)),
+        NavNext::Install(enabled) => ui.add_enabled(
+            enabled,
+            icon_button("Install", egui_phosphor::regular::CHECK),
+        ),
         NavNext::Finish => ui.add(icon_button("Finish", egui_phosphor::regular::SIGN_OUT)),
     }
 }
