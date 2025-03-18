@@ -3,26 +3,34 @@ use eframe::egui;
 
 pub fn navbar(ui: &mut egui::Ui, next: NavNext, back: NavBack, exit: NavExit) -> NavResponse {
     let mut clicked = NavClicked::None;
+    let layout = egui::Layout::left_to_right(egui::Align::Center);
+    let inner_layout = egui::Layout::right_to_left(egui::Align::Center);
 
-    let container_response = ui.horizontal(|ui| {
+    let container_response = ui.with_layout(layout, |ui| {
         let exit_response = add_exit_button(ui, exit);
-        let back_response = add_back_button(ui, back);
-        let next_response = add_next_button(ui, next);
-
         if exit_response.as_ref().is_some_and(|r| r.clicked()) {
             clicked = NavClicked::Exit;
         }
-        if back_response.as_ref().is_some_and(|r| r.clicked()) {
-            clicked = NavClicked::Back;
-        }
-        if next_response.clicked() {
-            clicked = NavClicked::Next;
-        }
 
-        let mut response = next_response;
-        if let Some(r) = back_response {
-            response = response.union(r);
-        }
+        let mut response = ui
+            .with_layout(inner_layout, |ui| {
+                let next_response = add_next_button(ui, next);
+                let back_response = add_back_button(ui, back);
+                if next_response.clicked() {
+                    clicked = NavClicked::Next;
+                }
+                if back_response.as_ref().is_some_and(|r| r.clicked()) {
+                    clicked = NavClicked::Back;
+                }
+
+                let mut response = next_response;
+                if let Some(r) = back_response {
+                    response = response.union(r);
+                }
+                response
+            })
+            .inner;
+
         if let Some(r) = exit_response {
             response = response.union(r);
         }
