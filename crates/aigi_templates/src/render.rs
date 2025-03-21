@@ -1,20 +1,21 @@
 use super::filters;
 use crate::fs::create_output_directory;
-use anyhow::Result;
+use anyhow::{Result, anyhow};
 use minijinja::{Environment, Value};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 pub fn render_directory(src_path: &Path, dst_path: &Path, context: &Value) -> Result<()> {
-    do_render_directory(src_path, dst_path, &mut make_environment(), context)
+    do_render_directory(src_path, dst_path, &make_environment(), context)
 }
 
 fn do_render_directory(
     src_path: &Path,
     dst_path: &Path,
-    environment: &mut Environment,
+    environment: &Environment,
     context: &Value,
 ) -> Result<()> {
-    create_output_directory(dst_path)?;
+    let dst_path = render_path(dst_path, environment, context)?;
+    create_output_directory(&dst_path)?;
     for entry in std::fs::read_dir(src_path)? {
         let entry = entry?;
         let src = entry.path();
@@ -31,17 +32,25 @@ fn do_render_directory(
 fn do_render_file(
     src_path: &Path,
     dst_path: &Path,
-    environment: &mut Environment,
+    environment: &Environment,
     context: &Value,
 ) -> Result<()> {
     if src_path.extension().is_some_and(|e| e == "jinja") {
         let source = std::fs::read_to_string(src_path)?;
         let template = environment.template_from_str(&source)?;
-        std::fs::write(dst_path, template.render(context)?)?;
+        std::fs::write(dst_path.with_extension(""), template.render(context)?)?;
     } else {
-        std::fs::copy(src_path, dst_path)?;
+        std::fs::copy(src_path, &render_path(dst_path, environment, context)?)?;
     }
     Ok(())
+}
+
+fn render_path(path: &Path, environment: &Environment, context: &Value) -> Result<PathBuf> {
+    let path_str = path
+        .to_str()
+        .ok_or_else(|| anyhow!("Path is not valid UTF-8"))?;
+    let template = environment.template_from_str(path_str)?;
+    Ok(PathBuf::from(template.render(context)?))
 }
 
 fn make_environment() -> Environment<'static> {

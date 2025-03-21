@@ -7,20 +7,12 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d49c4a4f-ea20-426e-94b9-0d87bb383f6f" name="Changes" comment="Update ron">
-      <change afterPath="$PROJECT_DIR$/crates/aigi_templates/Cargo.toml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crates/aigi_templates/src/filters.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crates/aigi_templates/src/fs.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crates/aigi_templates/src/lib.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crates/aigi_templates/src/render.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crates/aigi_templates/tests/render_bot_template.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crates/aigi_templates/tests/test_bot_template/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crates/aigi_templates/tests/test_bot_template/pyproject.toml.jinja" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crates/aigi_templates/tests/test_bot_template/src/{{player_name}}/__init__.py.jinja" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/game-installer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/game-installer.iml" afterDir="false" />
+    <list default="true" id="d49c4a4f-ea20-426e-94b9-0d87bb383f6f" name="Changes" comment="Start template crate">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/aigi_templates/src/render.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_templates/src/render.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/aigi_templates/tests/render_bot_template.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_templates/tests/render_bot_template.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/aigi_templates/tests/test_bot_template/pyproject.toml.jinja" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_templates/tests/test_bot_template/pyproject.toml.jinja" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/aigi_templates/tests/test_bot_template/src/{{player_name}}/__init__.py.jinja" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_templates/tests/test_bot_template/src/{{player_name|to_identifier(&quot;snake_case&quot;)}}/__init__.py.jinja" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -284,7 +276,23 @@
       <option name="project" value="LOCAL" />
       <updated>1742567772789</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Start template crate">
+      <option name="closed" value="true" />
+      <created>1742573324665</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1742573324665</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Start template crate">
+      <option name="closed" value="true" />
+      <created>1742573357593</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1742573357593</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -303,6 +311,7 @@
     <MESSAGE value="Properly use temporary theme" />
     <MESSAGE value="Restructure to aigi" />
     <MESSAGE value="Update ron" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update ron" />
+    <MESSAGE value="Start template crate" />
+    <option name="LAST_COMMIT_MESSAGE" value="Start template crate" />
   </component>
 </project>

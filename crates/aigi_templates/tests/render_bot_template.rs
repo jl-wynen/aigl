@@ -9,14 +9,29 @@ fn output_path() -> PathBuf {
     PathBuf::from("tests").join("rendered_bot")
 }
 
+fn assert_in_file(expected_str: &str, segments: &[&str]) {
+    let mut path = output_path();
+    for segment in segments {
+        path.push(segment);
+    }
+    let content = std::fs::read_to_string(&path).unwrap();
+    assert!(content.contains(expected_str));
+}
+
 #[test]
 fn can_render_bot_template() {
     let dst_path = output_path();
+    if dst_path.exists() {
+        std::fs::remove_dir_all(&dst_path).unwrap();
+    }
+
     let context = aigi_template::context! {
-        player_name => "testo",
+        player_name => "test_o",
         bot_name => "Test-O Bot",
     };
     render_directory(&input_path(), &dst_path, &context).unwrap();
 
-    // std::fs::remove_dir_all(dst_path).unwrap()
+    assert_in_file(r#"name = "test_o""#, &["pyproject.toml"]);
+    assert_in_file(r#"class TestOBot:"#, &["src", "test_o", "__init__.py"]);
+    assert_in_file(r#"*.egg-info"#, &[".gitignore"]);
 }
