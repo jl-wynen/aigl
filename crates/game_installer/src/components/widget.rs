@@ -6,12 +6,13 @@ pub fn add_enabled_with_colors(
     visuals: &egui::style::Widgets,
     widget: impl egui::Widget,
 ) -> egui::Response {
-    // TODO use some way to scope the visuals to only this button
-    ui.with_layout(egui::Layout::left_to_right(egui::Align::Center), |ui| {
-        if enabled {
-            ui.visuals_mut().widgets = visuals.clone();
-        }
-        ui.add_enabled(enabled, widget)
-    })
-    .inner
+    if enabled {
+        let old_widgets = std::mem::replace(&mut ui.visuals_mut().widgets, visuals.clone());
+        ui.visuals_mut().widgets = visuals.clone();
+        let response = ui.add(widget);
+        ui.visuals_mut().widgets = old_widgets;
+        response
+    } else {
+        ui.add_enabled(false, widget)
+    }
 }
