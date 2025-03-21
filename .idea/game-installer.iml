@@ -2,9 +2,10 @@
 <module type="EMPTY_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/crates/game_installer/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/crates/game_installer_theme/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/crates/game_installer_theme_macros/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/aigi/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/aigi_app/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/crates/game_installer_theme/target" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>

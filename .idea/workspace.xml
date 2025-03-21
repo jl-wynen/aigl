@@ -7,9 +7,27 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d49c4a4f-ea20-426e-94b9-0d87bb383f6f" name="Changes" comment="All screens">
+    <list default="true" id="d49c4a4f-ea20-426e-94b9-0d87bb383f6f" name="Changes" comment="Properly use temporary theme">
+      <change afterPath="$PROJECT_DIR$/crates/aigi/Cargo.toml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crates/aigi_app/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/game-installer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/game-installer.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crates/game_installer/src/components/widget.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/game_installer/src/components/widget.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_app/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer/src/components/buttons.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_app/src/components/buttons.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer/src/components/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_app/src/components/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer/src/components/navbar.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_app/src/components/navbar.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer/src/components/widget.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_app/src/components/widget.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer/src/game_config.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_app/src/game_config.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer/src/install_app.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_app/src/app.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi/src/main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer/src/theme.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer_theme/Cargo.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer_theme/Cargo.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer_theme/src/color.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_app/src/theme/color.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer_theme/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_app/src/theme/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer_theme/src/radix.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_app/src/theme/radix.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/game_installer_theme/src/theme.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_app/src/theme/theme.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,39 +72,43 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Cargo.Run game-installer.executor&quot;: &quot;Run&quot;,
-    &quot;Cargo.Run w/ dyn theme.executor&quot;: &quot;Run&quot;,
-    &quot;Cargo.Run w/ load theme.executor&quot;: &quot;Run&quot;,
-    &quot;Cargo.Run w/ static theme.executor&quot;: &quot;Run&quot;,
-    &quot;Cargo.Test lib::tests.executor&quot;: &quot;Run&quot;,
-    &quot;Cargo.Test theme.executor&quot;: &quot;Run&quot;,
-    &quot;Cargo.Test theme::tests.executor&quot;: &quot;Run&quot;,
-    &quot;Cargo.Test theme::tests::deserialize_theme.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/jl/Prog/experiments/game-installer/crates/game_installer_theme_macros&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;org.rust.cargo.project.model.PROJECT_DISCOVERY&quot;: &quot;true&quot;,
-    &quot;org.rust.cargo.project.model.impl.CargoExternalSystemProjectAware.subscribe.first.balloon&quot;: &quot;&quot;,
-    &quot;org.rust.first.attach.projects&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;actions.on.save&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Cargo.Run game-installer.executor": "Run",
+    "Cargo.Run w/ dyn theme.executor": "Run",
+    "Cargo.Run w/ load theme.executor": "Run",
+    "Cargo.Run w/ static theme.executor": "Run",
+    "Cargo.Test lib::tests.executor": "Run",
+    "Cargo.Test theme.executor": "Run",
+    "Cargo.Test theme::tests.executor": "Run",
+    "Cargo.Test theme::tests::deserialize_theme.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/home/jl/Prog/experiments/game-installer/crates/game_installer",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "org.rust.cargo.project.model.PROJECT_DISCOVERY": "true",
+    "org.rust.cargo.project.model.impl.CargoExternalSystemProjectAware.subscribe.first.balloon": "",
+    "org.rust.first.attach.projects": "true",
+    "settings.editor.selected.configurable": "actions.on.save",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/crates/game_installer" />
       <recent name="$PROJECT_DIR$/crates/game_installer_theme_macros" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/crates/aigi/src" />
+      <recent name="$PROJECT_DIR$/crates/aigi_app/src/theme" />
       <recent name="$PROJECT_DIR$/crates/game_installer" />
+      <recent name="$PROJECT_DIR$/crates/aigi_app" />
+      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RsExternalLinterProjectSettings">
@@ -94,27 +116,9 @@
     <option name="tool" value="Clippy" />
   </component>
   <component name="RunManager" selected="Cargo.Run w/ load theme">
-    <configuration name="Run game-installer" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="buildProfileId" value="dev" />
-      <option name="command" value="run --package game-installer --bin game-installer" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <envs />
-      <option name="emulateTerminal" value="true" />
-      <option name="channel" value="DEFAULT" />
-      <option name="requiredFeatures" value="true" />
-      <option name="allFeatures" value="false" />
-      <option name="withSudo" value="false" />
-      <option name="buildTarget" value="REMOTE" />
-      <option name="backtrace" value="SHORT" />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run w/ load theme" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="buildProfileId" value="dev" />
-      <option name="command" value="run --package game-installer --bin game-installer --features=load-theme" />
+      <option name="command" value="run --package aigi --bin aigi --features=load-theme" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <envs />
       <option name="emulateTerminal" value="true" />
@@ -132,61 +136,7 @@
     </configuration>
     <configuration name="Run w/ static theme" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="buildProfileId" value="dev" />
-      <option name="command" value="run --package game-installer --bin game-installer" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <envs />
-      <option name="emulateTerminal" value="true" />
-      <option name="channel" value="DEFAULT" />
-      <option name="requiredFeatures" value="true" />
-      <option name="allFeatures" value="false" />
-      <option name="withSudo" value="false" />
-      <option name="buildTarget" value="REMOTE" />
-      <option name="backtrace" value="SHORT" />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Test lib::tests" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="buildProfileId" value="test" />
-      <option name="command" value="test --package game_installer_theme --lib tests" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <envs />
-      <option name="emulateTerminal" value="true" />
-      <option name="channel" value="DEFAULT" />
-      <option name="requiredFeatures" value="true" />
-      <option name="allFeatures" value="false" />
-      <option name="withSudo" value="false" />
-      <option name="buildTarget" value="REMOTE" />
-      <option name="backtrace" value="SHORT" />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Test theme" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-      <option name="buildProfileId" value="test" />
-      <option name="command" value="test --package game_installer_theme --features=load" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <envs />
-      <option name="emulateTerminal" value="true" />
-      <option name="channel" value="DEFAULT" />
-      <option name="requiredFeatures" value="true" />
-      <option name="allFeatures" value="false" />
-      <option name="withSudo" value="false" />
-      <option name="buildTarget" value="REMOTE" />
-      <option name="backtrace" value="SHORT" />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Test theme::tests::deserialize_theme" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="buildProfileId" value="test" />
-      <option name="command" value="test --package game_installer_theme --lib theme::tests::deserialize_theme -- --exact" />
+      <option name="command" value="run --package aigi --bin aigi" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <envs />
       <option name="emulateTerminal" value="true" />
@@ -203,20 +153,9 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Cargo.Test theme" />
       <item itemvalue="Cargo.Run w/ load theme" />
       <item itemvalue="Cargo.Run w/ static theme" />
-      <item itemvalue="Cargo.Test theme::tests::deserialize_theme" />
-      <item itemvalue="Cargo.Run game-installer" />
-      <item itemvalue="Cargo.Test lib::tests" />
     </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Cargo.Test theme::tests::deserialize_theme" />
-        <item itemvalue="Cargo.Test lib::tests" />
-        <item itemvalue="Cargo.Run game-installer" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="RustProjectSettings">
     <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
@@ -283,7 +222,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742313460213</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Properly use temporary theme">
+      <option name="closed" value="true" />
+      <created>1742566937161</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1742566937161</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -299,6 +246,7 @@
     <MESSAGE value="NavBar widget" />
     <MESSAGE value="Proper layout for buttons" />
     <MESSAGE value="All screens" />
-    <option name="LAST_COMMIT_MESSAGE" value="All screens" />
+    <MESSAGE value="Properly use temporary theme" />
+    <option name="LAST_COMMIT_MESSAGE" value="Properly use temporary theme" />
   </component>
 </project>

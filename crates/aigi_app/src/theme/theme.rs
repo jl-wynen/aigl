@@ -1,4 +1,4 @@
-use crate::color::Color;
+use super::color::Color;
 use anyhow::{Context, Result};
 use eframe::{
     egui::{self, CornerRadius, Stroke, style},
@@ -6,7 +6,7 @@ use eframe::{
 };
 use std::cell::OnceCell;
 
-#[cfg_attr(feature = "load", derive(serde::Deserialize))]
+#[cfg_attr(feature = "load-theme", derive(serde::Deserialize))]
 #[derive(Debug)]
 pub struct Theme {
     pub dark_mode: bool,
@@ -19,17 +19,17 @@ pub struct Theme {
     pub element_border_width: f32,
     pub corner_radius: u8,
 
-    #[cfg_attr(feature = "load", serde(skip))]
+    #[cfg_attr(feature = "load-theme", serde(skip))]
     base_widget_visuals: OnceCell<style::Widgets>,
-    #[cfg_attr(feature = "load", serde(skip))]
+    #[cfg_attr(feature = "load-theme", serde(skip))]
     highlight_widget_visuals: OnceCell<style::Widgets>,
-    #[cfg_attr(feature = "load", serde(skip))]
+    #[cfg_attr(feature = "load-theme", serde(skip))]
     warning_widget_visuals: OnceCell<style::Widgets>,
-    #[cfg_attr(feature = "load", serde(skip))]
+    #[cfg_attr(feature = "load-theme", serde(skip))]
     error_widget_visuals: OnceCell<style::Widgets>,
 }
 
-#[cfg_attr(feature = "load", derive(serde::Deserialize))]
+#[cfg_attr(feature = "load-theme", derive(serde::Deserialize))]
 #[derive(Debug)]
 pub struct Scale {
     pub bg: Color,
@@ -47,7 +47,7 @@ pub struct Scale {
 }
 
 impl Theme {
-    #[cfg(feature = "load")]
+    #[cfg(feature = "load-theme")]
     pub fn load(path: &std::path::Path) -> Result<Self> {
         use std::io::Read;
 
@@ -57,7 +57,7 @@ impl Theme {
         ron::from_str(&ron_string).context("When parsing theme")
     }
 
-    #[cfg(feature = "load")]
+    #[cfg(feature = "load-theme")]
     pub fn get_selected() -> Self {
         // TODO cache
         Self::load(
@@ -69,7 +69,7 @@ impl Theme {
         .expect("Failed to load theme")
     }
 
-    #[cfg(not(feature = "load"))]
+    #[cfg(not(feature = "load-theme"))]
     pub const fn get_selected() -> &'static Self {
         &crate::radix::RADIX_THEME
     }

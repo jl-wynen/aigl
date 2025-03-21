@@ -1,7 +1,7 @@
 use super::icon_button;
 use super::widget::add_enabled_with_colors;
+use crate::theme::Theme;
 use eframe::egui;
-use game_installer_theme::Theme;
 
 pub fn navbar(ui: &mut egui::Ui, next: NavNext, back: NavBack, exit: NavExit) -> NavResponse {
     let mut clicked = NavClicked::None;

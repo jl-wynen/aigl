@@ -1,7 +1,7 @@
 use eframe::egui::{Color32, ecolor::ParseHexColorError};
 use std::fmt::Formatter;
 
-#[cfg(feature = "load")]
+#[cfg(feature = "load-theme")]
 use serde::{
     Deserialize, Deserializer,
     de::{self, Visitor},
@@ -23,7 +23,7 @@ impl Color {
 
 // Custom deserializer for Color / Color32 because the implementation in
 // egui cannot parse hex strings directly.
-#[cfg(feature = "load")]
+#[cfg(feature = "load-theme")]
 impl<'de> Deserialize<'de> for Color {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -35,7 +35,7 @@ impl<'de> Deserialize<'de> for Color {
 
 struct ColorVisitor;
 
-#[cfg(feature = "load")]
+#[cfg(feature = "load-theme")]
 impl Visitor<'_> for ColorVisitor {
     type Value = Color;
 
@@ -56,7 +56,7 @@ mod tests {
     use super::*;
     use pretty_assertions::assert_eq;
 
-    #[cfg(feature = "load")]
+    #[cfg(feature = "load-theme")]
     #[test]
     fn can_deserialize_color_from_ron() {
         let color_str = "\"#ff0000\"";
@@ -71,7 +71,7 @@ mod tests {
         );
     }
 
-    #[cfg(feature = "load")]
+    #[cfg(feature = "load-theme")]
     #[test]
     fn deserialize_color_requires_hash() {
         let color_str = "\"00ff00\"";

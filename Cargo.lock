@@ -130,6 +130,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "aigi"
+version = "0.1.0"
+dependencies = [
+ "aigi_app",
+]
+
+[[package]]
+name = "aigi_app"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "eframe",
+ "egui-phosphor",
+ "pretty_assertions",
+ "rfd",
+ "ron",
+ "serde",
+ "serde_derive",
+]
+
+[[package]]
 name = "android-activity"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1198,28 +1219,6 @@ dependencies = [
  "pin-project-lite",
  "pin-utils",
  "slab",
-]
-
-[[package]]
-name = "game-installer"
-version = "0.1.0"
-dependencies = [
- "eframe",
- "egui-phosphor",
- "game_installer_theme",
- "rfd",
-]
-
-[[package]]
-name = "game_installer_theme"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "eframe",
- "pretty_assertions",
- "ron",
- "serde",
- "serde_derive",
 ]
 
 [[package]]
