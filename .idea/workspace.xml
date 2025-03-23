@@ -7,19 +7,21 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d49c4a4f-ea20-426e-94b9-0d87bb383f6f" name="Changes" comment="Add git clone function">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="d49c4a4f-ea20-426e-94b9-0d87bb383f6f" name="Changes" comment="Start template crate">
+      <change afterPath="$PROJECT_DIR$/crates/aigi_system/Cargo.toml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crates/aigi_system/src/lib.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crates/aigi/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi/src/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crates/aigi_git/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_git/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crates/aigi_git/src/repo.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_git/src/repo.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/aigi_templates/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_templates/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/aigi_templates/src/fs.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_system/src/fs.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crates/aigi_templates/src/render.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_templates/src/render.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="RsBuildProfile:dev" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="RsBuildProfile:test" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -71,7 +73,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "/home/jl/Prog/experiments/game-installer/crates/aigi_git",
+    "last_opened_file_path": "/home/jl/Prog/experiments/game-installer/crates/aigi_system",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -86,24 +88,24 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/crates/aigi_git" />
+      <recent name="$PROJECT_DIR$/crates/aigi_system" />
       <recent name="$PROJECT_DIR$/crates/aigi_templates" />
       <recent name="$PROJECT_DIR$/crates/game_installer" />
       <recent name="$PROJECT_DIR$/crates/game_installer_theme_macros" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/crates/aigi_system/src" />
       <recent name="$PROJECT_DIR$/crates/aigi/src" />
       <recent name="$PROJECT_DIR$/crates/aigi_app/src/theme" />
       <recent name="$PROJECT_DIR$/crates/game_installer" />
       <recent name="$PROJECT_DIR$/crates/aigi_app" />
-      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RsExternalLinterProjectSettings">
     <option name="runOnTheFly" value="true" />
     <option name="tool" value="Clippy" />
   </component>
-  <component name="RunManager" selected="Cargo.Run w/ load theme">
+  <component name="RunManager" selected="Cargo.Tests in 'aigi_templates'">
     <configuration name="Run w/ load theme" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="buildProfileId" value="dev" />
       <option name="command" value="run --package aigi --bin aigi --features=load-theme" />
@@ -140,10 +142,53 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Test lib::tests" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="buildProfileId" value="test" />
+      <option name="command" value="test --package aigi_template --lib tests" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <option name="emulateTerminal" value="true" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Tests in 'aigi_templates'" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package aigi_template" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <option name="emulateTerminal" value="true" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run w/ load theme" />
       <item itemvalue="Cargo.Run w/ static theme" />
+      <item itemvalue="Cargo.Test lib::tests" />
+      <item itemvalue="Cargo.Tests in 'aigi_templates'" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Cargo.Tests in 'aigi_templates'" />
+        <item itemvalue="Cargo.Test lib::tests" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="RustProjectSettings">
     <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
@@ -161,6 +206,7 @@
       <workItem from="1742215117252" duration="5688000" />
       <workItem from="1742291886890" duration="4919000" />
       <workItem from="1742311113889" duration="4660000" />
+      <workItem from="1742746530379" duration="740000" />
     </task>
     <task id="LOCAL-00001" summary="Turn into workspace">
       <option name="closed" value="true" />
@@ -250,31 +296,7 @@
       <option name="project" value="LOCAL" />
       <updated>1742573357593</updated>
     </task>
-    <task id="LOCAL-00012" summary="Cache loaded theme string">
-      <option name="closed" value="true" />
-      <created>1743002290025</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1743002290026</updated>
-    </task>
-    <task id="LOCAL-00013" summary="Add git clone function">
-      <option name="closed" value="true" />
-      <created>1743003426720</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1743003426720</updated>
-    </task>
-    <task id="LOCAL-00014" summary="Add git clone function">
-      <option name="closed" value="true" />
-      <created>1743003461338</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1743003461338</updated>
-    </task>
-    <option name="localTasksCounter" value="15" />
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -294,8 +316,6 @@
     <MESSAGE value="Restructure to aigi" />
     <MESSAGE value="Update ron" />
     <MESSAGE value="Start template crate" />
-    <MESSAGE value="Cache loaded theme string" />
-    <MESSAGE value="Add git clone function" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add git clone function" />
+    <option name="LAST_COMMIT_MESSAGE" value="Start template crate" />
   </component>
 </project>

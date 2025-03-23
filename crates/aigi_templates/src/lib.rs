@@ -1,5 +1,4 @@
 mod filters;
-mod fs;
 mod render;
 
 pub use minijinja::context;
