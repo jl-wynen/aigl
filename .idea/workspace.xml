@@ -7,14 +7,8 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d49c4a4f-ea20-426e-94b9-0d87bb383f6f" name="Changes" comment="Start template crate">
-      <change afterPath="$PROJECT_DIR$/crates/aigi_system/Cargo.toml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crates/aigi_system/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crates/aigi_templates/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_templates/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crates/aigi_templates/src/fs.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_system/src/fs.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crates/aigi_templates/src/render.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_templates/src/render.rs" afterDir="false" />
+    <list default="true" id="d49c4a4f-ea20-426e-94b9-0d87bb383f6f" name="Changes" comment="Move fs into aigi_system">
+      <change beforePath="$PROJECT_DIR$/crates/aigi_system/src/fs.rs" beforeDir="false" afterPath="$PROJECT_DIR$/crates/aigi_system/src/fs.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -206,7 +200,7 @@
       <workItem from="1742215117252" duration="5688000" />
       <workItem from="1742291886890" duration="4919000" />
       <workItem from="1742311113889" duration="4660000" />
-      <workItem from="1742746530379" duration="740000" />
+      <workItem from="1742746530379" duration="858000" />
     </task>
     <task id="LOCAL-00001" summary="Turn into workspace">
       <option name="closed" value="true" />
@@ -296,7 +290,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742573357593</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Move fs into aigi_system">
+      <option name="closed" value="true" />
+      <created>1742747316318</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1742747316319</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -316,6 +318,7 @@
     <MESSAGE value="Restructure to aigi" />
     <MESSAGE value="Update ron" />
     <MESSAGE value="Start template crate" />
-    <option name="LAST_COMMIT_MESSAGE" value="Start template crate" />
+    <MESSAGE value="Move fs into aigi_system" />
+    <option name="LAST_COMMIT_MESSAGE" value="Move fs into aigi_system" />
   </component>
 </project>
