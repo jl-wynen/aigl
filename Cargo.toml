@@ -14,6 +14,8 @@ license = "MIT"
 anyhow = "1.0"
 eframe = { version = "0.31", features = ["default"] }
 egui-phosphor = "0.9"
+git2 = { version = "0.20", features = ["vendored-libgit2"] }
+git2_credentials = "0.15"
 lazy_static = "1.5.0"
 minijinja = "2.8"
 pretty_assertions = "1.4"
