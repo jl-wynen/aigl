@@ -7,7 +7,7 @@ use eframe::{
 use std::cell::OnceCell;
 
 #[cfg_attr(feature = "load-theme", derive(serde::Deserialize))]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Theme {
     pub dark_mode: bool,
     pub base: Scale,
@@ -30,7 +30,7 @@ pub struct Theme {
 }
 
 #[cfg_attr(feature = "load-theme", derive(serde::Deserialize))]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Scale {
     pub bg: Color,
     pub bg_subtle: Color,
@@ -48,25 +48,16 @@ pub struct Scale {
 
 impl Theme {
     #[cfg(feature = "load-theme")]
-    pub fn load(path: &std::path::Path) -> Result<Self> {
-        use std::io::Read;
-
-        let mut file = std::fs::File::open(path)?;
-        let mut ron_string = String::new();
-        file.read_to_string(&mut ron_string)?;
-        ron::from_str(&ron_string).context("When parsing theme")
-    }
-
-    #[cfg(feature = "load-theme")]
     pub fn get_selected() -> Self {
-        // TODO cache
-        Self::load(
-            &std::path::Path::new(env!("CARGO_WORKSPACE_DIR"))
-                .join("resources")
-                .join("themes")
-                .join("radix.ron"),
-        )
-        .expect("Failed to load theme")
+        lazy_static::lazy_static! {
+            static ref THEME_STRING: String = read_string(
+                &std::path::Path::new(env!("CARGO_WORKSPACE_DIR"))
+                    .join("resources")
+                    .join("themes")
+                    .join("radix.ron"))
+            .expect("Failed to load theme");
+        }
+        ron::from_str(&THEME_STRING).expect("Failed to parse theme")
     }
 
     #[cfg(not(feature = "load-theme"))]
@@ -177,4 +168,14 @@ impl Theme {
             open: active,
         }
     }
+}
+
+#[cfg(feature = "load-theme")]
+fn read_string(path: &std::path::Path) -> Result<String> {
+    use std::io::Read;
+
+    let mut file = std::fs::File::open(path)?;
+    let mut string = String::new();
+    file.read_to_string(&mut string)?;
+    Ok(string)
 }
