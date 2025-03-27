@@ -144,6 +144,7 @@ version = "0.1.0"
 dependencies = [
  "aigi_app",
  "aigi_git",
+ "lazy_static",
 ]
 
 [[package]]

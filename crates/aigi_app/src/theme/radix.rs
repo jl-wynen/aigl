@@ -1,8 +1,8 @@
-use crate::Color;
-use crate::theme::{Scale, Theme};
+use super::theme::ThemeConfig;
+use super::{Color, Scale, Theme};
 
 #[allow(dead_code)]
-pub const RADIX_THEME: Theme = Theme {
+pub const RADIX_THEME: Theme = ThemeConfig {
     dark_mode: true,
     base: Scale {
         bg: Color::from_rgb(17, 17, 19),
@@ -63,4 +63,5 @@ pub const RADIX_THEME: Theme = Theme {
     stroke_width: 1.0,
     element_border_width: 1.0,
     corner_radius: 1,
-};
+}
+.build();

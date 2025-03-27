@@ -12,6 +12,8 @@ license.workspace = true
 aigi_app = { path = "../aigi_app" }
 aigi_git = { path = "../aigi_git" }
 
+lazy_static = { workspace = true }
+
 [features]
 load-theme = [
     "aigi_app/load-theme",

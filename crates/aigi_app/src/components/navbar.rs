@@ -93,19 +93,19 @@ fn add_next_button(ui: &mut egui::Ui, spec: NavNext) -> egui::Response {
         NavNext::Next(enabled) => add_enabled_with_colors(
             ui,
             enabled,
-            theme.highlight_widget_visuals(),
+            &theme.highlight_widget_visuals,
             icon_button("Next", egui_phosphor::regular::CARET_RIGHT),
         ),
         NavNext::Install(enabled) => add_enabled_with_colors(
             ui,
             enabled,
-            theme.highlight_widget_visuals(),
+            &theme.highlight_widget_visuals,
             icon_button("Install", egui_phosphor::regular::CHECK),
         ),
         NavNext::Finish => add_enabled_with_colors(
             ui,
             true,
-            theme.highlight_widget_visuals(),
+            &theme.highlight_widget_visuals,
             icon_button("Finish", egui_phosphor::regular::SIGN_OUT),
         ),
     }

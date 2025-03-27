@@ -1,12 +1,31 @@
 use super::color::Color;
-use anyhow::{Context, Result};
 use eframe::{
     egui::{self, CornerRadius, Stroke, style},
     epaint,
 };
 use std::cell::OnceCell;
 
-#[cfg_attr(feature = "load-theme", derive(serde::Deserialize))]
+#[cfg(feature = "load-theme")]
+use anyhow::Result;
+
+#[cfg_attr(
+    feature = "load-theme",
+    derive(serde::Deserialize),
+    serde(rename = "Theme")
+)]
+#[derive(Debug)]
+pub struct ThemeConfig {
+    pub dark_mode: bool,
+    pub base: Scale,
+    pub highlight: Scale,
+    pub warning: Scale,
+    pub error: Scale,
+
+    pub stroke_width: f32,
+    pub element_border_width: f32,
+    pub corner_radius: u8,
+}
+
 #[derive(Clone, Debug)]
 pub struct Theme {
     pub dark_mode: bool,
@@ -19,14 +38,10 @@ pub struct Theme {
     pub element_border_width: f32,
     pub corner_radius: u8,
 
-    #[cfg_attr(feature = "load-theme", serde(skip))]
-    base_widget_visuals: OnceCell<style::Widgets>,
-    #[cfg_attr(feature = "load-theme", serde(skip))]
-    highlight_widget_visuals: OnceCell<style::Widgets>,
-    #[cfg_attr(feature = "load-theme", serde(skip))]
-    warning_widget_visuals: OnceCell<style::Widgets>,
-    #[cfg_attr(feature = "load-theme", serde(skip))]
-    error_widget_visuals: OnceCell<style::Widgets>,
+    pub base_widget_visuals: style::Widgets,
+    pub highlight_widget_visuals: style::Widgets,
+    pub warning_widget_visuals: style::Widgets,
+    pub error_widget_visuals: style::Widgets,
 }
 
 #[cfg_attr(feature = "load-theme", derive(serde::Deserialize))]
@@ -46,88 +61,29 @@ pub struct Scale {
     pub fg_high_contrast: Color,
 }
 
-impl Theme {
-    #[cfg(feature = "load-theme")]
-    pub fn get_selected() -> Self {
-        lazy_static::lazy_static! {
-            static ref THEME_STRING: String = read_string(
-                &std::path::Path::new(env!("CARGO_WORKSPACE_DIR"))
-                    .join("resources")
-                    .join("themes")
-                    .join("radix.ron"))
-            .expect("Failed to load theme");
-        }
-        ron::from_str(&THEME_STRING).expect("Failed to parse theme")
-    }
-
-    #[cfg(not(feature = "load-theme"))]
-    pub const fn get_selected() -> &'static Self {
-        &crate::radix::RADIX_THEME
-    }
-
-    pub fn base_widget_visuals(&self) -> &style::Widgets {
-        self.base_widget_visuals
-            .get_or_init(|| self.make_widgets(&self.base))
-    }
-
-    pub fn highlight_widget_visuals(&self) -> &style::Widgets {
-        self.highlight_widget_visuals
-            .get_or_init(|| self.make_widgets(&self.highlight))
-    }
-
-    pub fn warning_widget_visuals(&self) -> &style::Widgets {
-        self.warning_widget_visuals
-            .get_or_init(|| self.make_widgets(&self.warning))
-    }
-
-    pub fn error_widget_visuals(&self) -> &style::Widgets {
-        self.error_widget_visuals
-            .get_or_init(|| self.make_widgets(&self.error))
-    }
-
-    pub fn apply(&self, ctx: &egui::Context) {
-        let old = ctx.style().visuals.clone();
-        ctx.set_visuals(egui::Visuals {
+impl ThemeConfig {
+    pub const fn build(self) -> Theme {
+        let base_widget_visuals = self.make_widgets(&self.base);
+        let highlight_widget_visuals = self.make_widgets(&self.highlight);
+        let warning_widget_visuals = self.make_widgets(&self.warning);
+        let error_widget_visuals = self.make_widgets(&self.error);
+        Theme {
             dark_mode: self.dark_mode,
-
-            window_fill: self.base.bg.0,
-            panel_fill: self.base.bg.0,
-            faint_bg_color: self.base.bg_subtle.0,
-            extreme_bg_color: self.base.bg_element.0,
-            code_bg_color: self.base.bg_subtle.0,
-
-            hyperlink_color: self.highlight.fg_high_contrast.0,
-            warn_fg_color: self.warning.fg_high_contrast.0,
-            error_fg_color: self.error.fg_high_contrast.0,
-
-            window_shadow: epaint::Shadow {
-                color: self.base.bg_subtle.0,
-                ..old.window_shadow
-            },
-            popup_shadow: epaint::Shadow {
-                color: self.base.bg_subtle.0,
-                ..old.popup_shadow
-            },
-            text_cursor: style::TextCursorStyle {
-                stroke: Stroke {
-                    color: self.base.fg_high_contrast.0,
-                    ..old.text_cursor.stroke
-                },
-                ..old.text_cursor
-            },
-            selection: style::Selection {
-                bg_fill: self.highlight.bg_solid.0,
-                stroke: Stroke {
-                    color: self.highlight.border_element.0,
-                    ..old.selection.stroke
-                },
-            },
-            widgets: self.make_widgets(&self.base),
-            ..old
-        });
+            base: self.base,
+            highlight: self.highlight,
+            warning: self.warning,
+            error: self.error,
+            stroke_width: self.stroke_width,
+            element_border_width: self.element_border_width,
+            corner_radius: self.corner_radius,
+            base_widget_visuals,
+            highlight_widget_visuals,
+            warning_widget_visuals,
+            error_widget_visuals,
+        }
     }
 
-    fn make_widgets(&self, scale: &Scale) -> style::Widgets {
+    const fn make_widgets(&self, scale: &Scale) -> style::Widgets {
         let base_visuals = style::WidgetVisuals {
             bg_fill: scale.bg_element.0,
             weak_bg_fill: scale.bg_element.0,
@@ -167,6 +123,70 @@ impl Theme {
             active,
             open: active,
         }
+    }
+}
+
+impl Theme {
+    #[cfg(feature = "load-theme")]
+    pub fn get_selected() -> Self {
+        lazy_static::lazy_static! {
+            static ref THEME_STRING: String = read_string(
+                &std::path::Path::new(env!("CARGO_WORKSPACE_DIR"))
+                    .join("resources")
+                    .join("themes")
+                    .join("radix.ron"))
+            .expect("Failed to load theme");
+        }
+        let config: ThemeConfig = ron::from_str(&THEME_STRING).expect("Failed to parse theme");
+        config.build()
+    }
+
+    #[cfg(not(feature = "load-theme"))]
+    pub const fn get_selected() -> &'static Self {
+        let x = &super::radix::RADIX_THEME;
+        x
+    }
+
+    pub fn apply(&self, ctx: &egui::Context) {
+        let old = ctx.style().visuals.clone();
+        ctx.set_visuals(egui::Visuals {
+            dark_mode: self.dark_mode,
+
+            window_fill: self.base.bg.0,
+            panel_fill: self.base.bg.0,
+            faint_bg_color: self.base.bg_subtle.0,
+            extreme_bg_color: self.base.bg_element.0,
+            code_bg_color: self.base.bg_subtle.0,
+
+            hyperlink_color: self.highlight.fg_high_contrast.0,
+            warn_fg_color: self.warning.fg_high_contrast.0,
+            error_fg_color: self.error.fg_high_contrast.0,
+
+            window_shadow: epaint::Shadow {
+                color: self.base.bg_subtle.0,
+                ..old.window_shadow
+            },
+            popup_shadow: epaint::Shadow {
+                color: self.base.bg_subtle.0,
+                ..old.popup_shadow
+            },
+            text_cursor: style::TextCursorStyle {
+                stroke: Stroke {
+                    color: self.base.fg_high_contrast.0,
+                    ..old.text_cursor.stroke
+                },
+                ..old.text_cursor
+            },
+            selection: style::Selection {
+                bg_fill: self.highlight.bg_solid.0,
+                stroke: Stroke {
+                    color: self.highlight.border_element.0,
+                    ..old.selection.stroke
+                },
+            },
+            widgets: self.base_widget_visuals.clone(),
+            ..old
+        });
     }
 }
 
