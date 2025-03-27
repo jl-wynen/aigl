@@ -19,6 +19,9 @@ fn do_render_directory(
     for entry in std::fs::read_dir(src_path)? {
         let entry = entry?;
         let src = entry.path();
+        if is_excluded(&src) {
+            continue;
+        }
         let dst = dst_path.join(entry.file_name());
         if src.is_dir() {
             do_render_directory(&src, &dst, environment, context)?;
@@ -57,4 +60,8 @@ fn make_environment() -> Environment<'static> {
     let mut env = Environment::new();
     env.add_filter("to_identifier", filters::to_identifier);
     env
+}
+
+fn is_excluded(path: &Path) -> bool {
+    path.file_name().is_some_and(|name| name == ".git")
 }
