@@ -1,4 +1,4 @@
-use super::theme::ThemeConfig;
+use super::theme_struct::ThemeConfig;
 use super::{Color, Scale, Theme};
 
 #[allow(dead_code)]

@@ -3,7 +3,6 @@ use eframe::{
     egui::{self, CornerRadius, Stroke, style},
     epaint,
 };
-use std::cell::OnceCell;
 
 #[cfg(feature = "load-theme")]
 use anyhow::Result;

@@ -1,7 +1,9 @@
 mod color;
 #[cfg(not(feature = "load-theme"))]
 mod radix;
-mod theme;
+mod theme_struct;
 
+#[allow(unused_imports)]
 pub use color::Color;
-pub use theme::{Scale, Theme};
+#[allow(unused_imports)]
+pub use theme_struct::{Scale, Theme};

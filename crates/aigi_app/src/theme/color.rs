@@ -1,4 +1,5 @@
 use eframe::egui::{Color32, ecolor::ParseHexColorError};
+#[cfg(feature = "load-theme")]
 use std::fmt::Formatter;
 
 #[cfg(feature = "load-theme")]
@@ -12,10 +13,12 @@ use serde::{
 pub struct Color(pub Color32);
 
 impl Color {
+    #[allow(dead_code)]
     pub fn from_hex(hex: &str) -> Result<Self, ParseHexColorError> {
         Color32::from_hex(hex).map(Self)
     }
 
+    #[allow(dead_code)]
     pub const fn from_rgb(r: u8, g: u8, b: u8) -> Self {
         Self(Color32::from_rgb(r, g, b))
     }
@@ -51,8 +54,9 @@ impl Visitor<'_> for ColorVisitor {
     }
 }
 
+#[cfg(feature = "load-theme")]
 #[cfg(test)]
-mod tests {
+mod load_tests {
     use super::*;
     use pretty_assertions::assert_eq;
 
