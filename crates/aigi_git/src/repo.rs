@@ -6,6 +6,7 @@ pub struct Repository {
 }
 
 impl Repository {
+    /// Clone a remote repository to the specified path.
     pub fn clone(url: &str, target: &Path, shallow: bool) -> Result<Self> {
         if target.exists() {
             bail!("Output directory {} already exists", target.display());
@@ -30,8 +31,15 @@ impl Repository {
         Ok(Self { repo })
     }
 
+    /// Create a new repository at the specified path.
     pub fn init(path: &Path) -> Result<Self> {
         let repo = git2::Repository::init(path)?;
+        Ok(Self { repo })
+    }
+
+    /// Open an existing repository at the specified path.
+    pub fn open(path: &Path) -> Result<Self> {
+        let repo = git2::Repository::open(path)?;
         Ok(Self { repo })
     }
 
