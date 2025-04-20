@@ -1,42 +1,61 @@
 use crate::cache::Cache;
 use crate::settings::uv_network_settings;
 use anyhow::Result;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use uv::{commands, printer::Printer};
 use uv_configuration::{Concurrency, IndexStrategy, KeyringProviderType, PreviewMode};
 use uv_distribution_types::{DependencyMetadata, IndexLocations};
 use uv_install_wheel::LinkMode;
-use uv_python::{PythonDownloads, PythonPreference};
+use uv_python::{PythonDownloads, PythonEnvironment, PythonPreference};
 use uv_settings::PythonInstallMirrors;
 use uv_virtualenv::Prompt;
 
-pub async fn venv(path: &Path, python_request: &str, cache: &Cache) -> Result<()> {
-    let _ = commands::venv(
-        path,
-        Some(path.to_owned()),
-        Some(python_request),
-        PythonInstallMirrors::default(),
-        PythonPreference::OnlyManaged,
-        PythonDownloads::Automatic,
-        LinkMode::default(),
-        &IndexLocations::default(),
-        IndexStrategy::default(),
-        DependencyMetadata::default(),
-        KeyringProviderType::default(),
-        &uv_network_settings(),
-        Prompt::None,
-        false,
-        false,
-        false,
-        None,
-        Concurrency::default(),
-        true, // install independently of any projects
-        true,
-        cache.underlying(),
-        Printer::Default, // TODO probably need more silent
-        false,
-        PreviewMode::Disabled,
-    )
-    .await?;
-    Ok(())
+pub struct VirtualEnvironment {
+    root: PathBuf,
+    python_environment: PythonEnvironment,
+}
+
+impl VirtualEnvironment {
+    pub async fn create(root: PathBuf, python_request: &str, cache: &Cache) -> Result<Self> {
+        let _ = commands::venv(
+            &root,
+            Some(root.clone()),
+            Some(python_request),
+            PythonInstallMirrors::default(),
+            PythonPreference::OnlyManaged,
+            PythonDownloads::Automatic,
+            LinkMode::default(),
+            &IndexLocations::default(),
+            IndexStrategy::default(),
+            DependencyMetadata::default(),
+            KeyringProviderType::default(),
+            &uv_network_settings(),
+            Prompt::None,
+            false,
+            false,
+            false,
+            None,
+            Concurrency::default(),
+            true, // install independently of any projects
+            true,
+            cache.underlying(),
+            Printer::Default, // TODO probably need more silent
+            false,
+            PreviewMode::Disabled,
+        )
+        .await?;
+        Self::new(root, cache)
+    }
+
+    fn new(root: PathBuf, cache: &Cache) -> Result<Self> {
+        let python_environment = PythonEnvironment::from_root(&root, cache.underlying())?;
+        Ok(Self {
+            root,
+            python_environment,
+        })
+    }
+
+    pub(crate) fn python_environment(&self) -> PythonEnvironment {
+        self.python_environment.clone()
+    }
 }

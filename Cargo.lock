@@ -196,6 +196,9 @@ dependencies = [
  "uv-distribution-types",
  "uv-install-wheel",
  "uv-python",
+ "uv-requirements",
+ "uv-requirements-txt",
+ "uv-resolver",
  "uv-settings",
  "uv-virtualenv",
 ]
@@ -1347,7 +1350,16 @@ version = "5.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "44c45a9d03d6676652bcb5e724c7e988de1acad23a711b5217ab9cbecbec2225"
 dependencies = [
- "dirs-sys",
+ "dirs-sys 0.4.1",
+]
+
+[[package]]
+name = "dirs"
+version = "6.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c3e8aa94d75141228480295a7d0e7feb620b1a5ad9f12bc40be62411e38cce4e"
+dependencies = [
+ "dirs-sys 0.5.0",
 ]
 
 [[package]]
@@ -1358,8 +1370,20 @@ checksum = "520f05a5cbd335fae5a99ff7a6ab8627577660ee5cfd6a94a6a929b52ff0321c"
 dependencies = [
  "libc",
  "option-ext",
- "redox_users",
+ "redox_users 0.4.6",
  "windows-sys 0.48.0",
+]
+
+[[package]]
+name = "dirs-sys"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e01a3366d27ee9890022452ee61b2b63a67e6f13f58900b651ff5665f0bb1fab"
+dependencies = [
+ "libc",
+ "option-ext",
+ "redox_users 0.5.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -2040,7 +2064,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8a5ef5b71f0b7c38b9fab78d33a071100a3a3d6f82d80bc8e53ba4b82b6487ed"
 dependencies = [
  "dialoguer",
- "dirs",
+ "dirs 5.0.1",
  "git2",
  "pest",
  "pest_derive",
@@ -4230,6 +4254,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "redox_users"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dd6f9d3d47bdd2ad6945c5015a226ec6155d0bcdfd8f7cd29f86b71f8de99d2b"
+dependencies = [
+ "getrandom 0.2.15",
+ "libredox",
+ "thiserror 2.0.12",
+]
+
+[[package]]
 name = "reflink-copy"
 version = "0.1.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4886,7 +4921,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8b1fdf65dd6331831494dd616b30351c38e96e45921a27745cf98490458b90bb"
 dependencies = [
  "bstr",
- "dirs",
+ "dirs 6.0.0",
  "os_str_bytes",
 ]
 
@@ -4898,9 +4933,9 @@ checksum = "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
 
 [[package]]
 name = "signal-hook-registry"
-version = "1.4.4"
+version = "1.4.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a1ee1aca2bc74ef9589efa7ccaa0f3752751399940356209b3fd80c078149b5e"
+checksum = "9203b8055f63a2a00e2f593bb0510367fe707d7ff1e5c872de2f537b339e5410"
 dependencies = [
  "libc",
 ]
@@ -5708,7 +5743,7 @@ checksum = "458f7a779bf54acc9f347480ac654f68407d3aab21269a6e3c9f922acd9e2da9"
 [[package]]
 name = "uv"
 version = "0.6.14"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "anstream",
  "anyhow",
@@ -5799,7 +5834,7 @@ dependencies = [
 [[package]]
 name = "uv-auth"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -5825,7 +5860,7 @@ dependencies = [
 [[package]]
 name = "uv-build-backend"
 version = "0.1.0"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "csv",
  "flate2",
@@ -5857,7 +5892,7 @@ dependencies = [
 [[package]]
 name = "uv-build-frontend"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "anstream",
  "fs-err",
@@ -5891,7 +5926,7 @@ dependencies = [
 [[package]]
 name = "uv-cache"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "clap",
  "fs-err",
@@ -5918,7 +5953,7 @@ dependencies = [
 [[package]]
 name = "uv-cache-info"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "fs-err",
  "globwalk",
@@ -5933,7 +5968,7 @@ dependencies = [
 [[package]]
 name = "uv-cache-key"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "hex",
  "memchr",
@@ -5945,7 +5980,7 @@ dependencies = [
 [[package]]
 name = "uv-cli"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "anstream",
  "anyhow",
@@ -5973,7 +6008,7 @@ dependencies = [
 [[package]]
 name = "uv-client"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -6025,7 +6060,7 @@ dependencies = [
 [[package]]
 name = "uv-configuration"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "clap",
  "either",
@@ -6056,7 +6091,7 @@ dependencies = [
 [[package]]
 name = "uv-console"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "console",
 ]
@@ -6064,7 +6099,7 @@ dependencies = [
 [[package]]
 name = "uv-dirs"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "etcetera",
  "fs-err",
@@ -6075,7 +6110,7 @@ dependencies = [
 [[package]]
 name = "uv-dispatch"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "anyhow",
  "futures",
@@ -6107,7 +6142,7 @@ dependencies = [
 [[package]]
 name = "uv-distribution"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "anyhow",
  "either",
@@ -6153,7 +6188,7 @@ dependencies = [
 [[package]]
 name = "uv-distribution-filename"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "memchr",
  "rkyv",
@@ -6171,7 +6206,7 @@ dependencies = [
 [[package]]
 name = "uv-distribution-types"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "arcstr",
  "bitflags 2.9.0",
@@ -6207,7 +6242,7 @@ dependencies = [
 [[package]]
 name = "uv-extract"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "astral-tokio-tar",
  "async-compression",
@@ -6233,7 +6268,7 @@ dependencies = [
 [[package]]
 name = "uv-fs"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "backon",
  "dunce",
@@ -6257,7 +6292,7 @@ dependencies = [
 [[package]]
 name = "uv-git"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "anyhow",
  "cargo-util",
@@ -6281,7 +6316,7 @@ dependencies = [
 [[package]]
 name = "uv-git-types"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "serde",
  "thiserror 2.0.12",
@@ -6292,7 +6327,7 @@ dependencies = [
 [[package]]
 name = "uv-globfilter"
 version = "0.1.0"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "globset",
  "regex",
@@ -6305,7 +6340,7 @@ dependencies = [
 [[package]]
 name = "uv-install-wheel"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "clap",
  "configparser",
@@ -6341,7 +6376,7 @@ dependencies = [
 [[package]]
 name = "uv-installer"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "anyhow",
  "async-channel",
@@ -6379,7 +6414,7 @@ dependencies = [
 [[package]]
 name = "uv-macros"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -6390,7 +6425,7 @@ dependencies = [
 [[package]]
 name = "uv-metadata"
 version = "0.1.0"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "async_zip",
  "fs-err",
@@ -6408,7 +6443,7 @@ dependencies = [
 [[package]]
 name = "uv-normalize"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "rkyv",
  "schemars",
@@ -6419,7 +6454,7 @@ dependencies = [
 [[package]]
 name = "uv-once-map"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "dashmap",
  "futures",
@@ -6429,7 +6464,7 @@ dependencies = [
 [[package]]
 name = "uv-options-metadata"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "serde",
 ]
@@ -6437,7 +6472,7 @@ dependencies = [
 [[package]]
 name = "uv-pep440"
 version = "0.7.0"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "rkyv",
  "serde",
@@ -6450,7 +6485,7 @@ dependencies = [
 [[package]]
 name = "uv-pep508"
 version = "0.6.0"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "arcstr",
  "boxcar",
@@ -6473,7 +6508,7 @@ dependencies = [
 [[package]]
 name = "uv-performance-memory-allocator"
 version = "0.1.0"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "mimalloc",
  "tikv-jemallocator",
@@ -6482,7 +6517,7 @@ dependencies = [
 [[package]]
 name = "uv-platform-tags"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "memchr",
  "rkyv",
@@ -6495,7 +6530,7 @@ dependencies = [
 [[package]]
 name = "uv-publish"
 version = "0.1.0"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "astral-tokio-tar",
  "async-compression",
@@ -6532,7 +6567,7 @@ dependencies = [
 [[package]]
 name = "uv-pypi-types"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "hashbrown 0.15.2",
  "indexmap",
@@ -6560,7 +6595,7 @@ dependencies = [
 [[package]]
 name = "uv-python"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "anyhow",
  "clap",
@@ -6616,7 +6651,7 @@ dependencies = [
 [[package]]
 name = "uv-requirements"
 version = "0.1.0"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "anyhow",
  "configparser",
@@ -6651,7 +6686,7 @@ dependencies = [
 [[package]]
 name = "uv-requirements-txt"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "fs-err",
  "memchr",
@@ -6674,7 +6709,7 @@ dependencies = [
 [[package]]
 name = "uv-resolver"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "arcstr",
  "clap",
@@ -6730,7 +6765,7 @@ dependencies = [
 [[package]]
 name = "uv-scripts"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "fs-err",
  "indoc",
@@ -6749,7 +6784,7 @@ dependencies = [
 [[package]]
 name = "uv-settings"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "clap",
  "fs-err",
@@ -6781,7 +6816,7 @@ dependencies = [
 [[package]]
 name = "uv-shell"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "anyhow",
  "home",
@@ -6797,7 +6832,7 @@ dependencies = [
 [[package]]
 name = "uv-small-str"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "arcstr",
  "rkyv",
@@ -6808,7 +6843,7 @@ dependencies = [
 [[package]]
 name = "uv-state"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "fs-err",
  "tempfile",
@@ -6818,7 +6853,7 @@ dependencies = [
 [[package]]
 name = "uv-static"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "uv-macros",
 ]
@@ -6826,7 +6861,7 @@ dependencies = [
 [[package]]
 name = "uv-tool"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "fs-err",
  "pathdiff",
@@ -6855,7 +6890,7 @@ dependencies = [
 [[package]]
 name = "uv-torch"
 version = "0.1.0"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "clap",
  "either",
@@ -6874,7 +6909,7 @@ dependencies = [
 [[package]]
 name = "uv-trampoline-builder"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "fs-err",
  "thiserror 2.0.12",
@@ -6885,7 +6920,7 @@ dependencies = [
 [[package]]
 name = "uv-types"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "anyhow",
  "rustc-hash 2.1.1",
@@ -6908,12 +6943,12 @@ dependencies = [
 [[package]]
 name = "uv-version"
 version = "0.6.14"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 
 [[package]]
 name = "uv-virtualenv"
 version = "0.0.4"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "fs-err",
  "itertools 0.14.0",
@@ -6931,7 +6966,7 @@ dependencies = [
 [[package]]
 name = "uv-warnings"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "anstream",
  "owo-colors",
@@ -6941,7 +6976,7 @@ dependencies = [
 [[package]]
 name = "uv-workspace"
 version = "0.0.1"
-source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#275fc5def93f1ccba62d8b683f17285073fcb567"
+source = "git+https://github.com/jl-wynen/uv-pub/?branch=0.6.14#a46508c40dd52f53bae99207996bd2f0db776dc4"
 dependencies = [
  "fs-err",
  "glob",

@@ -18,12 +18,23 @@ async fn run() -> Result<()> {
     }
 
     let project = Project::init(project_root()).await?;
-    aigi_python::venv(
-        &project_root().join(".venv"),
+    let venv = aigi_python::VirtualEnvironment::create(
+        project_root().join(".venv"),
         "3.13",
         project.python_cache(),
     )
     .await?;
+
+    aigi_python::install(
+        &[aigi_python::RequirementsSource::Package(
+            "requests".to_owned(),
+        )],
+        false,
+        project.python_cache(),
+        &venv,
+    )
+    .await?;
+
     Ok(())
 }
 
@@ -46,5 +57,5 @@ fn main() {
     // turned out to be unnecessary. Waiting for those to complete can cause
     // the CLI to hang before exiting.
     runtime.shutdown_background();
-    // result.unwrap();
+    result.unwrap();
 }
