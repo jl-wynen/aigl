@@ -15,6 +15,7 @@
       <excludeFolder url="file://$MODULE_DIR$/crates/game_installer_theme/target" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
       <excludeFolder url="file://$MODULE_DIR$/crates/aigi_templates/tests/rendered_bot" />
+      <excludeFolder url="file://$MODULE_DIR$/project" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

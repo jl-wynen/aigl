@@ -1,37 +1,38 @@
 // hide console window on Windows in release
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod config;
+mod project;
+
 use anyhow::Result;
+use project::Project;
 use std::path::{Path, PathBuf};
 
 fn project_root() -> PathBuf {
     PathBuf::from(env!("CARGO_WORKSPACE_DIR")).join("project")
 }
 
-fn launcher_root() -> PathBuf {
-    project_root().join(".aigi")
-}
-
-async fn init_launcher_dir() -> Result<PathBuf> {
-    let root = launcher_root();
-    tokio::fs::create_dir_all(&root).await?;
-    cachedir::ensure_tag(&root)?;
-    Ok(root)
-}
-
-async fn run() {
-    if launcher_root().exists() {
-        tokio::fs::remove_dir_all(launcher_root()).await.unwrap();
+async fn run() -> Result<()> {
+    if project_root().exists() {
+        tokio::fs::remove_dir_all(project_root()).await?;
     }
-    init_launcher_dir().await.unwrap();
-    let cache = aigi_python::Cache::init(&launcher_root()).unwrap();
-    aigi_python::venv(&project_root().join(".venv"), "3.13", &cache)
-        .await
-        .unwrap();
+
+    let project = Project::init(project_root()).await?;
+    aigi_python::venv(
+        &project_root().join(".venv"),
+        "3.13",
+        project.python_cache(),
+    )
+    .await?;
+    Ok(())
 }
 
 fn main() {
     // aigi_app::GameInstallApp::run();
+    // Safety: This is single threaded code.
+    unsafe {
+        config::init_environment(&project_root());
+    }
 
     let runtime = tokio::runtime::Builder::new_current_thread()
         .enable_all()
