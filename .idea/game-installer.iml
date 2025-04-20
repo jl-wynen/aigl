@@ -9,6 +9,9 @@
       <sourceFolder url="file://$MODULE_DIR$/crates/aigi_templates/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/crates/aigi_templates/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/crates/aigi_system/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/aigi_git/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/aigi_git/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/aigi_python/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/crates/game_installer_theme/target" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
       <excludeFolder url="file://$MODULE_DIR$/crates/aigi_templates/tests/rendered_bot" />

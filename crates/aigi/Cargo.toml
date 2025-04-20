@@ -11,8 +11,11 @@ license.workspace = true
 [dependencies]
 aigi_app = { path = "../aigi_app" }
 aigi_git = { path = "../aigi_git" }
+aigi_python = { path = "../aigi_python" }
 
-lazy_static = { workspace = true }
+anyhow = { workspace = true }
+cachedir = { workspace = true }
+tokio = { workspace = true }
 
 [features]
 load-theme = [
