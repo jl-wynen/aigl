@@ -30,6 +30,7 @@ async fn init_launcher_dir(project_root: &Path) -> Result<PathBuf> {
     let root = launcher_dir(project_root);
     tokio::fs::create_dir(&root).await?;
     cachedir::ensure_tag(&root)?;
+    tokio::fs::write(root.join(".gitignore"), "*").await?;
     Ok(root)
 }
 
