@@ -7,16 +7,22 @@ pub const LAUNCHER_DIR_NAME: &str = ".aigl";
 pub const PYTHON_DIR_NAME: &str = "python";
 pub const UV_CACHE_DIR_NAME: &str = "uv_cache";
 
-pub fn launcher_dir(project_root: &Path) -> PathBuf {
+pub const PROJECT_CONFIG_FILE_NAME: &str = "project.toml";
+
+pub(crate) fn launcher_dir(project_root: &Path) -> PathBuf {
     project_root.join(LAUNCHER_DIR_NAME)
 }
 
-pub fn python_dir(launcher_root: &Path) -> PathBuf {
+pub(crate) fn python_dir(launcher_root: &Path) -> PathBuf {
     launcher_root.join(PYTHON_DIR_NAME)
 }
 
-pub fn uv_cache_dir(launcher_root: &Path) -> PathBuf {
+pub(crate) fn uv_cache_dir(launcher_root: &Path) -> PathBuf {
     launcher_root.join(UV_CACHE_DIR_NAME)
+}
+
+pub(crate) fn project_config_file(launcher_root: &Path) -> PathBuf {
+    launcher_root.join(PROJECT_CONFIG_FILE_NAME)
 }
 
 /// Initialise the environment for the given project directory.
@@ -37,15 +43,15 @@ pub unsafe fn init_environment(project_root: &Path) {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ProjectConfig {
-    game: GameConfig,
-    venv_locations: HashMap<String, PathBuf>,
+    pub game: GameConfig,
+    pub venv_locations: HashMap<String, PathBuf>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct GameConfig {
-    name: String,
+    pub name: String,
     #[serde(default)]
-    venv: GameVenvSpec,
+    pub venv: GameVenvSpec,
 }
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]

@@ -5,9 +5,9 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
 pub struct Project {
-    path: PathBuf,
+    root: PathBuf,
     python_cache: aigl_python::Cache,
-    venv_locations: HashMap<String, PathBuf>,
+    cfg: config::ProjectConfig,
 }
 
 impl Project {
@@ -16,9 +16,16 @@ impl Project {
         let launcher_dir = init_launcher_dir(&path).await?;
         let python_cache = init_python_cache(&launcher_dir)?;
         Ok(Self {
-            path,
+            root: path,
             python_cache,
-            venv_locations: HashMap::new(),
+            cfg: config::ProjectConfig {
+                //TODO
+                game: config::GameConfig {
+                    name: "test game".to_string(),
+                    venv: config::GameVenvSpec::Single,
+                },
+                venv_locations: HashMap::new(),
+            },
         })
     }
 
@@ -34,11 +41,12 @@ impl Project {
             );
         }
 
+        let cfg = config::ProjectConfig::load_toml(&config::project_config_file(&launcher_dir))?;
         let python_cache = open_python_cache(&launcher_dir)?;
         Ok(Self {
-            path,
+            root: path,
             python_cache,
-            venv_locations: HashMap::new(),
+            cfg,
         })
     }
 
@@ -46,11 +54,12 @@ impl Project {
         &self.python_cache
     }
 
-    pub fn venv_path(&self) -> Result<&Path> {
-        match self.venv_locations.len() {
-            0 => bail!("No virtual environments"),
-            1 => Ok(self.venv_locations.iter().next().unwrap().1),
-            n => bail!("Multiple virtual environments: {}", n),
+    pub fn venv_path(&self) -> Result<PathBuf> {
+        match self.cfg.game.venv {
+            config::GameVenvSpec::Single => {
+                let venv_path = &self.cfg.venv_locations["game"];
+                Ok(self.root.join(venv_path))
+            }
         }
     }
 
@@ -67,6 +76,8 @@ async fn init_launcher_dir(project_root: &Path) -> Result<PathBuf> {
     let bots_dir = launcher_dir.join("bots");
     create_output_directory(&bots_dir).await?;
     cachedir::ensure_tag(&bots_dir)?;
+
+    // TODO config
 
     Ok(launcher_dir)
 }

@@ -42,7 +42,7 @@ fn main() {
     // aigl_app::GameInstallApp::run();
     // Safety: This is single threaded code.
     unsafe {
-        aigl_project::init_environment(&project_root());
+        aigl_project::config::init_environment(&project_root());
     }
 
     let runtime = tokio::runtime::Builder::new_current_thread()
