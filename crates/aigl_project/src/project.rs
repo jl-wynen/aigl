@@ -1,4 +1,5 @@
 use super::config;
+use aigl_system::fs::create_output_directory;
 use anyhow::{Result, bail};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -11,13 +12,7 @@ pub struct Project {
 
 impl Project {
     pub async fn init(path: PathBuf) -> Result<Self> {
-        if path.exists() {
-            bail!(
-                "Cannot create project at {}: directory already exists",
-                path.display()
-            );
-        }
-        tokio::fs::create_dir_all(&path).await?;
+        create_output_directory(&path).await?;
         let launcher_dir = init_launcher_dir(&path).await?;
         let python_cache = init_python_cache(&launcher_dir)?;
         Ok(Self {
@@ -66,11 +61,11 @@ impl Project {
 
 async fn init_launcher_dir(project_root: &Path) -> Result<PathBuf> {
     let launcher_dir = config::launcher_dir(project_root);
-    tokio::fs::create_dir(&launcher_dir).await?;
+    create_output_directory(&launcher_dir).await?;
     tokio::fs::write(launcher_dir.join(".gitignore"), "*").await?;
 
     let bots_dir = launcher_dir.join("bots");
-    tokio::fs::create_dir(&bots_dir).await?;
+    create_output_directory(&bots_dir).await?;
     cachedir::ensure_tag(&bots_dir)?;
 
     Ok(launcher_dir)

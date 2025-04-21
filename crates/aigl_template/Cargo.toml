@@ -13,6 +13,7 @@ aigl_system = { path = "../aigl_system" }
 
 anyhow = { workspace = true }
 minijinja = { workspace = true }
+tokio = { workspace = true }
 
 [dev-dependencies]
 pretty_assertions = { workspace = true }

@@ -1,30 +1,45 @@
 use super::filters;
 use aigl_system::fs::create_output_directory;
-use anyhow::{Result, anyhow};
+use anyhow::{Context, Result};
 use minijinja::{Environment, Value};
 use std::path::{Path, PathBuf};
 
-pub fn render_directory(src_path: &Path, dst_path: &Path, context: &Value) -> Result<()> {
-    do_render_directory(src_path, dst_path, &make_environment(), context)
+pub async fn render_directory(src_path: &Path, dst_path: &Path, context: &Value) -> Result<()> {
+    create_output_directory(dst_path).await?;
+    let src = src_path.to_owned();
+    let dst = dst_path.to_owned();
+    let context = context.clone();
+    tokio::task::spawn_blocking(move || {
+        do_render_directory(src, dst, &make_environment(), &context)
+    })
+    .await?
 }
 
+// Use a blocking function here because most files are small and spawning separate
+// tasks for all those files causes too much overhead.
 fn do_render_directory(
-    src_path: &Path,
-    dst_path: &Path,
+    src_path: PathBuf,
+    dst_path: PathBuf,
     environment: &Environment,
     context: &Value,
 ) -> Result<()> {
-    let dst_path = render_path(dst_path, environment, context)?;
-    create_output_directory(&dst_path)?;
     for entry in std::fs::read_dir(src_path)? {
         let entry = entry?;
         let src = entry.path();
         if is_excluded(&src) {
             continue;
         }
-        let dst = dst_path.join(entry.file_name());
+        let dst = dst_path.join(render_path(
+            entry
+                .file_name()
+                .into_string()
+                .expect("Path name is not UTF-8"),
+            environment,
+            context,
+        )?);
         if src.is_dir() {
-            do_render_directory(&src, &dst, environment, context)?;
+            std::fs::create_dir(&dst)?;
+            do_render_directory(src, dst, environment, context)?;
         } else {
             do_render_file(&src, &dst, environment, context)?;
         }
@@ -43,16 +58,13 @@ fn do_render_file(
         let template = environment.template_from_str(&source)?;
         std::fs::write(dst_path.with_extension(""), template.render(context)?)?;
     } else {
-        std::fs::copy(src_path, &render_path(dst_path, environment, context)?)?;
+        std::fs::copy(src_path, dst_path)?;
     }
     Ok(())
 }
 
-fn render_path(path: &Path, environment: &Environment, context: &Value) -> Result<PathBuf> {
-    let path_str = path
-        .to_str()
-        .ok_or_else(|| anyhow!("Path is not valid UTF-8"))?;
-    let template = environment.template_from_str(path_str)?;
+fn render_path(path: String, environment: &Environment, context: &Value) -> Result<PathBuf> {
+    let template = environment.template_from_str(&path)?;
     Ok(PathBuf::from(template.render(context)?))
 }
 

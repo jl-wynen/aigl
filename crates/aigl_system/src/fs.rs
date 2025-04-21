@@ -1,23 +1,25 @@
 use anyhow::{Context, bail};
 use std::path::Path;
-// TODO use
-pub fn create_output_directory(path: &Path) -> anyhow::Result<()> {
+
+pub async fn create_output_directory(path: &Path) -> anyhow::Result<()> {
     if path.exists() {
         if !path.is_dir() {
             bail!(
                 "Output path exists and is not a directory: {}",
                 path.display()
             );
-        } else if !directory_is_empty(path) {
+        } else if !directory_is_empty(path).await {
             bail!("Output directory is not empty: {}", path.display());
         }
     }
-    std::fs::create_dir_all(path).context("When creating output directory")
+    tokio::fs::create_dir_all(path)
+        .await
+        .context("When creating output directory")
 }
 
-pub fn directory_is_empty(path: &Path) -> bool {
-    let Ok(mut children) = path.read_dir() else {
+pub async fn directory_is_empty(path: &Path) -> bool {
+    let Ok(mut children) = tokio::fs::read_dir(path).await else {
         return false;
     };
-    children.next().is_none()
+    children.next_entry().await.is_err()
 }

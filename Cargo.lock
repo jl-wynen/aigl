@@ -221,6 +221,7 @@ name = "aigl_system"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "tokio",
 ]
 
 [[package]]
@@ -231,6 +232,7 @@ dependencies = [
  "anyhow",
  "minijinja",
  "pretty_assertions",
+ "tokio",
 ]
 
 [[package]]
