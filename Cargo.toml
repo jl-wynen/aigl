@@ -26,6 +26,7 @@ serde = "1.0"
 serde_derive = "1.0"
 # Copied from uv
 tokio = { version = "1.40.0", features = ["fs", "io-util", "macros", "process", "rt", "signal", "sync"] }
+toml = { version = "0.8", features = ["display", "parse"] }
 
 uv = { git = "https://github.com/jl-wynen/uv-pub/", branch = "0.6.14" }
 uv-cache = { git = "https://github.com/jl-wynen/uv-pub/", branch = "0.6.14" }

@@ -1,4 +1,6 @@
+use anyhow::Result;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
 pub const LAUNCHER_DIR_NAME: &str = ".aigl";
@@ -35,17 +37,42 @@ pub unsafe fn init_environment(project_root: &Path) {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ProjectConfig {
-    // TODO
-    //  - venvs (paths, what they are used for)
-    //  - game config (git urls, python version, n bots, launch options, etc.)
-
-    // game config has options that don't depend on specific installation
-    // concrete paths, etc., are stored in ProjectConfig
-    // paths should be relative to project root
     game: GameConfig,
+    venv_locations: HashMap<String, PathBuf>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct GameConfig {
     name: String,
+    #[serde(default)]
+    venv: GameVenvSpec,
+}
+
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+pub enum GameVenvSpec {
+    #[default]
+    #[serde(rename = "single")]
+    Single,
+}
+
+impl ProjectConfig {
+    pub fn load_toml(path: &Path) -> Result<Self> {
+        Ok(toml::from_str(&std::fs::read_to_string(path)?)?)
+    }
+
+    pub fn save_toml(&self, path: &Path) -> Result<()> {
+        std::fs::write(path, toml::to_string(self)?)?;
+        Ok(())
+    }
+}
+
+impl GameConfig {
+    pub fn load_toml(path: &Path) -> Result<Self> {
+        Ok(toml::from_str(&std::fs::read_to_string(path)?)?)
+    }
+
+    pub fn save_toml(&self, path: &Path) -> Result<()> {
+        std::fs::write(path, toml::to_string(self)?)?;
+        Ok(())
+    }
 }

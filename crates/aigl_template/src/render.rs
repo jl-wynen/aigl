@@ -1,6 +1,6 @@
 use super::filters;
 use aigl_system::fs::create_output_directory;
-use anyhow::{Context, Result};
+use anyhow::Result;
 use minijinja::{Environment, Value};
 use std::path::{Path, PathBuf};
 
