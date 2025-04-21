@@ -47,6 +47,10 @@ impl VirtualEnvironment {
         Self::new(root, cache)
     }
 
+    pub fn open(root: PathBuf, cache: &Cache) -> Result<Self> {
+        Self::new(root, cache)
+    }
+
     fn new(root: PathBuf, cache: &Cache) -> Result<Self> {
         let python_environment = PythonEnvironment::from_root(&root, cache.underlying())?;
         Ok(Self {

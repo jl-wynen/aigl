@@ -153,6 +153,7 @@ version = "0.1.0"
 dependencies = [
  "aigl_app",
  "aigl_git",
+ "aigl_project",
  "aigl_python",
  "anyhow",
  "cachedir",
@@ -185,6 +186,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "aigl_project"
+version = "0.1.0"
+dependencies = [
+ "aigl_git",
+ "aigl_python",
+ "aigl_system",
+ "aigl_template",
+ "anyhow",
+ "cachedir",
+ "tokio",
+]
+
+[[package]]
 name = "aigl_python"
 version = "0.1.0"
 dependencies = [
@@ -197,7 +211,6 @@ dependencies = [
  "uv-install-wheel",
  "uv-python",
  "uv-requirements",
- "uv-requirements-txt",
  "uv-resolver",
  "uv-settings",
  "uv-virtualenv",

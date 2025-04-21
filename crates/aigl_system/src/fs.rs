@@ -1,6 +1,6 @@
 use anyhow::{Context, bail};
 use std::path::Path;
-
+// TODO use
 pub fn create_output_directory(path: &Path) -> anyhow::Result<()> {
     if path.exists() {
         if !path.is_dir() {

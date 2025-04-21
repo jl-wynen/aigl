@@ -18,7 +18,6 @@ uv-distribution-types = { workspace = true }
 uv-install-wheel = { workspace = true }
 uv-python = { workspace = true }
 uv-requirements = { workspace = true }
-uv-requirements-txt = { workspace = true }
 uv-resolver = { workspace = true }
 uv-settings = { workspace = true }
 uv-virtualenv = { workspace = true }

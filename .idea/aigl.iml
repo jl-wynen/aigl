@@ -6,12 +6,13 @@
       <sourceFolder url="file://$MODULE_DIR$/crates/aigl_app/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/crates/aigl_git/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/crates/aigl_git/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/aigl_project/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/crates/aigl_python/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/crates/aigl_system/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/crates/aigl_templates/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/crates/aigl_templates/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/aigl_template/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/aigl_template/tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/crates/aigl_git/tests/test_git_repo" />
-      <excludeFolder url="file://$MODULE_DIR$/crates/aigl_templates/tests/rendered_bot" />
+      <excludeFolder url="file://$MODULE_DIR$/crates/aigl_template/tests/rendered_bot" />
       <excludeFolder url="file://$MODULE_DIR$/project" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
