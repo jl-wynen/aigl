@@ -29,17 +29,17 @@ types = {
     "fg_high_contrast": 12,
 }
 
-lines = css.strip().split('\n')
+lines = css.strip().split("\n")
 
 for name, idx in types.items():
     line = lines[idx - 1]
-    hex = line.rsplit('#', 1)[1].rstrip(');')
-    rgb = tuple(int(hex[i:i+2], 16) for i in (0, 2, 4))
+    hex = line.rsplit("#", 1)[1].rstrip(");")
+    rgb = tuple(int(hex[i : i + 2], 16) for i in (0, 2, 4))
     print(f"{name}: Color::from_rgb{rgb},")
 
-print("-"*24)
+print("-" * 24)
 
 for name, idx in types.items():
     line = lines[idx - 1]
-    hex = line.rsplit('#', 1)[1].rstrip(');')
+    hex = line.rsplit("#", 1)[1].rstrip(");")
     print(f'{name}: "#{hex}",')

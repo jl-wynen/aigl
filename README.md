@@ -1,3 +1,3 @@
-# Aigl - AI game laucher
+# Aigl - AI game launcher
 
 WIP
