@@ -148,19 +148,19 @@ dependencies = [
 ]
 
 [[package]]
-name = "aigi"
+name = "aigl"
 version = "0.1.0"
 dependencies = [
- "aigi_app",
- "aigi_git",
- "aigi_python",
+ "aigl_app",
+ "aigl_git",
+ "aigl_python",
  "anyhow",
  "cachedir",
  "tokio",
 ]
 
 [[package]]
-name = "aigi_app"
+name = "aigl_app"
 version = "0.1.0"
 dependencies = [
  "anyhow",
@@ -175,7 +175,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "aigi_git"
+name = "aigl_git"
 version = "0.1.0"
 dependencies = [
  "anyhow",
@@ -185,7 +185,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "aigi_python"
+name = "aigl_python"
 version = "0.1.0"
 dependencies = [
  "anyhow",
@@ -204,17 +204,17 @@ dependencies = [
 ]
 
 [[package]]
-name = "aigi_system"
+name = "aigl_system"
 version = "0.1.0"
 dependencies = [
  "anyhow",
 ]
 
 [[package]]
-name = "aigi_template"
+name = "aigl_template"
 version = "0.1.0"
 dependencies = [
- "aigi_system",
+ "aigl_system",
  "anyhow",
  "minijinja",
  "pretty_assertions",

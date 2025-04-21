@@ -1,6 +1,6 @@
 use std::path::{Path, PathBuf};
 
-pub const LAUNCHER_DIR_NAME: &str = ".aigi";
+pub const LAUNCHER_DIR_NAME: &str = ".aigl";
 pub const PYTHON_DIR_NAME: &str = "python";
 pub const UV_CACHE_DIR_NAME: &str = "uv_cache";
 

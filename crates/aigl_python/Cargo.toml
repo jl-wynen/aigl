@@ -1,5 +1,5 @@
 [package]
-name = "aigi_python"
+name = "aigl_python"
 version = "0.1.0"
 edition.workspace = true
 rust-version.workspace = true

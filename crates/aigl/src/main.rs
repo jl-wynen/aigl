@@ -18,15 +18,15 @@ async fn run() -> Result<()> {
     }
 
     let project = Project::init(project_root()).await?;
-    let venv = aigi_python::VirtualEnvironment::create(
+    let venv = aigl_python::VirtualEnvironment::create(
         project_root().join(".venv"),
         "3.13",
         project.python_cache(),
     )
     .await?;
 
-    aigi_python::install(
-        &[aigi_python::RequirementsSource::Package(
+    aigl_python::install(
+        &[aigl_python::RequirementsSource::Package(
             "requests".to_owned(),
         )],
         false,
@@ -39,7 +39,7 @@ async fn run() -> Result<()> {
 }
 
 fn main() {
-    // aigi_app::GameInstallApp::run();
+    // aigl_app::GameInstallApp::run();
     // Safety: This is single threaded code.
     unsafe {
         config::init_environment(&project_root());

@@ -1,5 +1,5 @@
 [package]
-name = "aigi_git"
+name = "aigl_system"
 version = "0.1.0"
 edition.workspace = true
 rust-version.workspace = true
@@ -10,8 +10,3 @@ license.workspace = true
 
 [dependencies]
 anyhow = { workspace = true }
-git2 = { workspace = true }
-git2_credentials = { workspace = true }
-
-[dev-dependencies]
-pretty_assertions = { workspace = true }

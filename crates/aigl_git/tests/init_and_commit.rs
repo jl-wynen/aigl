@@ -1,4 +1,4 @@
-use aigi_git::Repository;
+use aigl_git::Repository;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;

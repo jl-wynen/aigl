@@ -1,4 +1,4 @@
-use aigi_template::render_directory;
+use aigl_template::render_directory;
 use std::path::PathBuf;
 
 fn input_path() -> PathBuf {
@@ -25,7 +25,7 @@ fn can_render_bot_template() {
         std::fs::remove_dir_all(&dst_path).unwrap();
     }
 
-    let context = aigi_template::context! {
+    let context = aigl_template::context! {
         player_name => "test_o",
         bot_name => "Test-O Bot",
     };

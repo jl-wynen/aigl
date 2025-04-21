@@ -1,5 +1,5 @@
 [package]
-name = "aigi"
+name = "aigl"
 version = "0.1.0"
 edition.workspace = true
 rust-version.workspace = true
@@ -9,9 +9,9 @@ authors.workspace = true
 license.workspace = true
 
 [dependencies]
-aigi_app = { path = "../aigi_app" }
-aigi_git = { path = "../aigi_git" }
-aigi_python = { path = "../aigi_python" }
+aigl_app = { path = "../aigl_app" }
+aigl_git = { path = "../aigl_git" }
+aigl_python = { path = "../aigl_python" }
 
 anyhow = { workspace = true }
 cachedir = { workspace = true }
@@ -19,5 +19,5 @@ tokio = { workspace = true }
 
 [features]
 load-theme = [
-    "aigi_app/load-theme",
+    "aigl_app/load-theme",
 ]

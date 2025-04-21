@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 
 pub(crate) struct Project {
     path: PathBuf,
-    python_cache: aigi_python::Cache,
+    python_cache: aigl_python::Cache,
 }
 
 impl Project {
@@ -21,7 +21,7 @@ impl Project {
         Ok(Self { path, python_cache })
     }
 
-    pub(crate) fn python_cache(&self) -> &aigi_python::Cache {
+    pub(crate) fn python_cache(&self) -> &aigl_python::Cache {
         &self.python_cache
     }
 }
@@ -34,8 +34,8 @@ async fn init_launcher_dir(project_root: &Path) -> Result<PathBuf> {
     Ok(root)
 }
 
-fn init_python_cache(launcher_dir: &Path) -> Result<aigi_python::Cache> {
-    aigi_python::Cache::init(&launcher_dir.join(UV_CACHE_DIR_NAME))
+fn init_python_cache(launcher_dir: &Path) -> Result<aigl_python::Cache> {
+    aigl_python::Cache::init(&launcher_dir.join(UV_CACHE_DIR_NAME))
 }
 
 fn launcher_dir(project_root: &Path) -> PathBuf {
