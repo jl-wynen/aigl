@@ -17,3 +17,4 @@ aigl_template = { path = "../aigl_template" }
 anyhow = { workspace = true }
 cachedir = { workspace = true }
 tokio = { workspace = true }
+serde = { workspace = true }

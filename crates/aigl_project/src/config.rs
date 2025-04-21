@@ -1,3 +1,4 @@
+use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
 
 pub const LAUNCHER_DIR_NAME: &str = ".aigl";
@@ -30,4 +31,21 @@ pub unsafe fn init_environment(project_root: &Path) {
         // Should be unused, but setting it here for good measure.
         std::env::set_var("UV_CACHE_DIR", uv_cache_dir(&launcher_root));
     }
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ProjectConfig {
+    // TODO
+    //  - venvs (paths, what they are used for)
+    //  - game config (git urls, python version, n bots, launch options, etc.)
+
+    // game config has options that don't depend on specific installation
+    // concrete paths, etc., are stored in ProjectConfig
+    // paths should be relative to project root
+    game: GameConfig,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct GameConfig {
+    name: String,
 }

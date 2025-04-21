@@ -195,6 +195,7 @@ dependencies = [
  "aigl_template",
  "anyhow",
  "cachedir",
+ "serde",
  "tokio",
 ]
 
