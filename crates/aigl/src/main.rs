@@ -34,6 +34,8 @@ async fn run() -> Result<()> {
 
     let project = Project::open(project_root())?;
     let venv = project.venv()?;
+    let cmd = venv.prepare_python_command().arg("--version").output()?;
+    dbg!(cmd);
 
     Ok(())
 }

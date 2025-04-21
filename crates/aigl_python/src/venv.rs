@@ -2,6 +2,7 @@ use crate::cache::Cache;
 use crate::settings::uv_network_settings;
 use anyhow::Result;
 use std::path::PathBuf;
+use std::process::Command;
 use uv::{commands, printer::Printer};
 use uv_configuration::{Concurrency, IndexStrategy, KeyringProviderType, PreviewMode};
 use uv_distribution_types::{DependencyMetadata, IndexLocations};
@@ -57,6 +58,15 @@ impl VirtualEnvironment {
             root,
             python_environment,
         })
+    }
+
+    pub fn prepare_python_command(&self) -> Command {
+        let exe_path = self
+            .python_environment()
+            .into_interpreter()
+            .real_executable()
+            .to_owned();
+        Command::new(exe_path)
     }
 
     pub(crate) fn python_environment(&self) -> PythonEnvironment {
