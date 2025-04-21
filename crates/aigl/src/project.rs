@@ -27,11 +27,15 @@ impl Project {
 }
 
 async fn init_launcher_dir(project_root: &Path) -> Result<PathBuf> {
-    let root = launcher_dir(project_root);
-    tokio::fs::create_dir(&root).await?;
-    cachedir::ensure_tag(&root)?;
-    tokio::fs::write(root.join(".gitignore"), "*").await?;
-    Ok(root)
+    let launcher_dir = launcher_dir(project_root);
+    tokio::fs::create_dir(&launcher_dir).await?;
+    tokio::fs::write(launcher_dir.join(".gitignore"), "*").await?;
+    
+    let bots_dir = launcher_dir.join("bots");
+    tokio::fs::create_dir(&bots_dir).await?;
+    cachedir::ensure_tag(&bots_dir)?;
+    
+    Ok(launcher_dir)
 }
 
 fn init_python_cache(launcher_dir: &Path) -> Result<aigl_python::Cache> {

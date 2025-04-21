@@ -27,7 +27,7 @@ async fn run() -> Result<()> {
 
     aigl_python::install(
         &[aigl_python::RequirementsSource::Package(
-            "requests".to_owned(),
+            "rich".to_owned(),
         )],
         false,
         project.python_cache(),
