@@ -41,23 +41,32 @@ async fn run() -> Result<()> {
 }
 
 fn main() {
-    // aigl_app::GameInstallApp::run();
-    // Safety: This is single threaded code.
-    unsafe {
-        aigl_project::config::init_environment(&project_root());
-    }
-
-    let runtime = tokio::runtime::Builder::new_current_thread()
-        .enable_all()
-        .build()
-        .expect("Failed building the Runtime");
-
-    let result = runtime.block_on(Box::pin(run()));
-    // Avoid waiting for pending tasks to complete.
+    // // aigl_app::GameInstallApp::run();
+    // // Safety: This is single threaded code.
+    // unsafe {
+    //     aigl_project::config::init_environment(&project_root());
+    // }
     //
-    // The resolver may have kicked off HTTP requests during resolution that
-    // turned out to be unnecessary. Waiting for those to complete can cause
-    // the CLI to hang before exiting.
-    runtime.shutdown_background();
-    result.unwrap();
+    // let runtime = tokio::runtime::Builder::new_current_thread()
+    //     .enable_all()
+    //     .build()
+    //     .expect("Failed building the Runtime");
+    //
+    // let result = runtime.block_on(Box::pin(run()));
+    // // Avoid waiting for pending tasks to complete.
+    // //
+    // // The resolver may have kicked off HTTP requests during resolution that
+    // // turned out to be unnecessary. Waiting for those to complete can cause
+    // // the CLI to hang before exiting.
+    // runtime.shutdown_background();
+    // result.unwrap();
+    let cfg = aigl_project::config::game::GameConfig::load_toml(
+        &project_root()
+            .parent()
+            .unwrap()
+            .join("brainstorming")
+            .join("game-config.toml"),
+    )
+    .unwrap();
+    dbg!(&cfg);
 }

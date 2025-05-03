@@ -24,6 +24,7 @@ rfd = "0.15"
 ron = "0.9"
 serde = "1.0"
 serde_derive = "1.0"
+serde_json = "1.0"
 # Copied from uv
 tokio = { version = "1.40.0", features = ["fs", "io-util", "macros", "process", "rt", "signal", "sync"] }
 toml = { version = "0.8", features = ["display", "parse"] }

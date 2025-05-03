@@ -7,23 +7,19 @@ use std::path::{Path, PathBuf};
 pub struct Project {
     root: PathBuf,
     python_cache: aigl_python::Cache,
-    cfg: config::ProjectConfig,
+    cfg: config::project::ProjectConfig,
 }
 
 impl Project {
-    pub async fn init(path: PathBuf) -> Result<Self> {
+    pub async fn init(path: PathBuf, game_config: config::game::GameConfig) -> Result<Self> {
         create_output_directory(&path).await?;
         let launcher_dir = init_launcher_dir(&path).await?;
         let python_cache = init_python_cache(&launcher_dir)?;
         Ok(Self {
             root: path,
             python_cache,
-            cfg: config::ProjectConfig {
-                //TODO
-                game: config::GameConfig {
-                    name: "test game".to_string(),
-                    venv: config::GameVenvSpec::Single,
-                },
+            cfg: config::project::ProjectConfig {
+                game_config,
                 venv_locations: HashMap::new(),
             },
         })
@@ -41,7 +37,8 @@ impl Project {
             );
         }
 
-        let cfg = config::ProjectConfig::load_toml(&config::project_config_file(&launcher_dir))?;
+        let cfg =
+            config::project::ProjectConfig::load_toml(&config::project_config_file(&launcher_dir))?;
         let python_cache = open_python_cache(&launcher_dir)?;
         Ok(Self {
             root: path,
@@ -55,10 +52,13 @@ impl Project {
     }
 
     pub fn venv_path(&self) -> Result<PathBuf> {
-        match self.cfg.game.venv {
-            config::GameVenvSpec::Single => {
+        match self.cfg.game_config.python.venv {
+            config::game::VenvKind::Single => {
                 let venv_path = &self.cfg.venv_locations["game"];
                 Ok(self.root.join(venv_path))
+            }
+            _ => {
+                bail!("No unique venv")
             }
         }
     }
