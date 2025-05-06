@@ -7,7 +7,7 @@ pub const LAUNCHER_DIR_NAME: &str = ".aigl";
 pub const PYTHON_DIR_NAME: &str = "python";
 pub const UV_CACHE_DIR_NAME: &str = "uv_cache";
 
-pub const PROJECT_CONFIG_FILE_NAME: &str = "project.toml";
+pub const PROJECT_CONFIG_FILE_NAME: &str = "project.json";
 
 pub(crate) fn launcher_dir(project_root: &Path) -> PathBuf {
     project_root.join(LAUNCHER_DIR_NAME)
@@ -51,12 +51,14 @@ pub mod project {
     }
 
     impl ProjectConfig {
-        pub fn load_toml(path: &Path) -> Result<Self> {
-            Ok(toml::from_str(&std::fs::read_to_string(path)?)?)
+        pub async fn load_json(path: &Path) -> Result<Self> {
+            Ok(serde_json::from_str(
+                &tokio::fs::read_to_string(path).await?,
+            )?)
         }
 
-        pub fn save_toml(&self, path: &Path) -> Result<()> {
-            std::fs::write(path, toml::to_string(self)?)?;
+        pub async fn save_json(&self, path: &Path) -> Result<()> {
+            tokio::fs::write(path, serde_json::to_string(self)?).await?;
             Ok(())
         }
     }
@@ -148,12 +150,12 @@ pub mod game {
     }
 
     impl GameConfig {
-        pub fn load_toml(path: &Path) -> Result<Self> {
-            Ok(toml::from_str(&std::fs::read_to_string(path)?)?)
+        pub async fn load_toml(path: &Path) -> Result<Self> {
+            Ok(toml::from_str(&tokio::fs::read_to_string(path).await?)?)
         }
 
-        pub fn save_toml(&self, path: &Path) -> Result<()> {
-            std::fs::write(path, toml::to_string(self)?)?;
+        pub async fn save_toml(&self, path: &Path) -> Result<()> {
+            tokio::fs::write(path, toml::to_string(self)?).await?;
             Ok(())
         }
     }

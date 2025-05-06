@@ -10,11 +10,21 @@ fn project_root() -> PathBuf {
 }
 
 async fn run() -> Result<()> {
-    // if project_root().exists() {
-    //     tokio::fs::remove_dir_all(project_root()).await?;
-    // }
-    //
-    // let project = Project::init(project_root()).await?;
+    if project_root().exists() {
+        tokio::fs::remove_dir_all(project_root()).await?;
+    }
+
+    let cfg = aigl_project::config::game::GameConfig::load_toml(
+        &project_root()
+            .parent()
+            .unwrap()
+            .join("brainstorming")
+            .join("game-config.toml"),
+    )
+    .await?;
+    dbg!(&cfg);
+    let project = Project::init(project_root(), cfg).await?;
+
     // let venv = aigl_python::VirtualEnvironment::create(
     //     project_root().join(".venv"),
     //     "3.13",
@@ -32,41 +42,32 @@ async fn run() -> Result<()> {
     // )
     // .await?;
 
-    let project = Project::open(project_root())?;
-    let venv = project.venv()?;
-    let cmd = venv.prepare_python_command().arg("--version").output()?;
-    dbg!(cmd);
+    // let project = Project::open(project_root()).await?;
+    // let venv = project.venv()?;
+    // let cmd = venv.prepare_python_command().arg("--version").output()?;
+    // dbg!(cmd);
 
     Ok(())
 }
 
 fn main() {
-    // // aigl_app::GameInstallApp::run();
-    // // Safety: This is single threaded code.
-    // unsafe {
-    //     aigl_project::config::init_environment(&project_root());
-    // }
+    // aigl_app::GameInstallApp::run();
+    // Safety: This is single threaded code.
+    unsafe {
+        aigl_project::config::init_environment(&project_root());
+    }
+
+    let runtime = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .expect("Failed building the Runtime");
+
+    let result = runtime.block_on(Box::pin(run()));
+    // Avoid waiting for pending tasks to complete.
     //
-    // let runtime = tokio::runtime::Builder::new_current_thread()
-    //     .enable_all()
-    //     .build()
-    //     .expect("Failed building the Runtime");
-    //
-    // let result = runtime.block_on(Box::pin(run()));
-    // // Avoid waiting for pending tasks to complete.
-    // //
-    // // The resolver may have kicked off HTTP requests during resolution that
-    // // turned out to be unnecessary. Waiting for those to complete can cause
-    // // the CLI to hang before exiting.
-    // runtime.shutdown_background();
-    // result.unwrap();
-    let cfg = aigl_project::config::game::GameConfig::load_toml(
-        &project_root()
-            .parent()
-            .unwrap()
-            .join("brainstorming")
-            .join("game-config.toml"),
-    )
-    .unwrap();
-    dbg!(&cfg);
+    // The resolver may have kicked off HTTP requests during resolution that
+    // turned out to be unnecessary. Waiting for those to complete can cause
+    // the CLI to hang before exiting.
+    runtime.shutdown_background();
+    result.unwrap();
 }
