@@ -1,4 +1,4 @@
-// hide console window on Windows in release
+// Hide the console window on Windows in release.
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use aigl_project::Project;
@@ -15,14 +15,9 @@ async fn run() -> Result<()> {
     }
 
     let cfg = aigl_project::config::game::GameConfig::load_toml(
-        &project_root()
-            .parent()
-            .unwrap()
-            .join("brainstorming")
-            .join("game-config.toml"),
+        &project_root().parent().unwrap().join("supremacy.toml"),
     )
     .await?;
-    dbg!(&cfg);
     let project = Project::init(project_root(), cfg).await?;
 
     // let venv = aigl_python::VirtualEnvironment::create(

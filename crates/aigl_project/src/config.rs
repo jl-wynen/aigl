@@ -6,6 +6,7 @@ use std::path::{Path, PathBuf};
 pub const LAUNCHER_DIR_NAME: &str = ".aigl";
 pub const PYTHON_DIR_NAME: &str = "python";
 pub const UV_CACHE_DIR_NAME: &str = "uv_cache";
+pub const BOT_TEMPLATES_DIR_NAME: &str = "bot_templates";
 
 pub const PROJECT_CONFIG_FILE_NAME: &str = "project.json";
 
@@ -19,6 +20,10 @@ pub(crate) fn python_dir(launcher_root: &Path) -> PathBuf {
 
 pub(crate) fn uv_cache_dir(launcher_root: &Path) -> PathBuf {
     launcher_root.join(UV_CACHE_DIR_NAME)
+}
+
+pub(crate) fn bot_templates_dir(launcher_root: &Path) -> PathBuf {
+    launcher_root.join(BOT_TEMPLATES_DIR_NAME)
 }
 
 pub(crate) fn project_config_file(launcher_root: &Path) -> PathBuf {
@@ -47,7 +52,9 @@ pub mod project {
     #[derive(Clone, Debug, Serialize, Deserialize)]
     pub struct ProjectConfig {
         pub game_config: game::GameConfig,
-        pub venv_locations: HashMap<String, PathBuf>,
+        pub game_path: PathBuf,
+        pub bot_template_path: PathBuf,
+        pub venv_paths: HashMap<String, PathBuf>,
     }
 
     impl ProjectConfig {
@@ -78,24 +85,24 @@ pub mod game {
 
     #[derive(Clone, Debug, Serialize, Deserialize)]
     pub struct Game {
-        url: String,
-        base_config_in_repo: PathBuf,
-        launch_args: Vec<String>,
+        pub url: String,
+        pub base_config_in_repo: PathBuf,
+        pub launch_args: Vec<String>,
     }
 
     #[derive(Clone, Debug, Serialize, Deserialize)]
     pub struct Bot {
-        template_url: String,
+        pub template_url: String,
         #[serde(default)]
-        template_args: HashMap<String, BotTemplateArg>,
+        pub template_args: HashMap<String, BotTemplateArg>,
     }
 
     #[derive(Clone, Debug, Serialize, Deserialize)]
     pub struct BotTemplateArg {
-        var: String,
-        display: String,
+        pub var: String,
+        pub display: String,
         #[serde(default, rename = "type")]
-        ty: BotTemplateArgType,
+        pub ty: BotTemplateArgType,
     }
 
     #[derive(Clone, Debug, Default, Serialize, Deserialize)]

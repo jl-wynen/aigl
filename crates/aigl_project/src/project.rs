@@ -1,4 +1,5 @@
 use super::config;
+use aigl_git::Repository;
 use aigl_system::fs::create_output_directory;
 use anyhow::{Result, bail};
 use std::collections::HashMap;
@@ -16,13 +17,29 @@ impl Project {
         let launcher_dir = init_launcher_dir(&path).await?;
         let python_cache = init_python_cache(&launcher_dir)?;
 
-        let project_config = config::project::ProjectConfig {
-            game_config,
-            venv_locations: HashMap::new(),
+        let mut project = Self {
+            root: path,
+            python_cache,
+            cfg: config::project::ProjectConfig {
+                game_config,
+                game_path: PathBuf::new(),
+                bot_template_path: PathBuf::new(),
+                venv_paths: HashMap::new(),
+            },
         };
-        project_config
-            .save_json(&config::project_config_file(&launcher_dir))
-            .await?;
+
+        let mut tasks = tokio::task::JoinSet::new();
+        clone_game_repo(&mut tasks, &mut project.cfg, &project.root);
+        clone_bot_template_repo(&mut tasks, &mut project.cfg, &launcher_dir);
+
+        if let Some(err) = tasks
+            .join_all()
+            .await
+            .into_iter()
+            .find_map(|result| result.err())
+        {
+            bail!(err);
+        };
 
         // TODO make this run stuff in parallel
         // TODO clone game + bot template
@@ -30,12 +47,9 @@ impl Project {
         // TODO create venvs
         // TODO install packages
 
+        project.save_config().await?;
         untag_dir_as_incomplete(&launcher_dir).await?;
-        Ok(Self {
-            root: path,
-            python_cache,
-            cfg: project_config,
-        })
+        Ok(project)
     }
 
     pub async fn open(path: PathBuf) -> Result<Self> {
@@ -68,7 +82,7 @@ impl Project {
     pub fn venv_path(&self) -> Result<PathBuf> {
         match self.cfg.game_config.python.venv {
             config::game::VenvKind::Single => {
-                let venv_path = &self.cfg.venv_locations["game"];
+                let venv_path = &self.cfg.venv_paths["game"];
                 Ok(self.root.join(venv_path))
             }
             _ => {
@@ -79,6 +93,14 @@ impl Project {
 
     pub fn venv(&self) -> Result<aigl_python::VirtualEnvironment> {
         aigl_python::VirtualEnvironment::open(self.venv_path()?.to_owned(), self.python_cache())
+    }
+
+    async fn save_config(&self) -> Result<()> {
+        self.cfg
+            .save_json(&config::project_config_file(&config::launcher_dir(
+                &self.root,
+            )))
+            .await
     }
 }
 
@@ -111,4 +133,26 @@ fn init_python_cache(launcher_dir: &Path) -> Result<aigl_python::Cache> {
 
 fn open_python_cache(launcher_dir: &Path) -> Result<aigl_python::Cache> {
     aigl_python::Cache::discover(&config::uv_cache_dir(launcher_dir))
+}
+
+fn clone_game_repo(
+    join_set: &mut tokio::task::JoinSet<Result<()>>,
+    cfg: &mut config::project::ProjectConfig,
+    project_root: &Path,
+) {
+    let url = cfg.game_config.game.url.to_owned();
+    let target = project_root.join(&cfg.game_config.name);
+    cfg.game_path = target.clone();
+    join_set.spawn_blocking(move || Repository::clone(&url, &target, false).map(|_| ()));
+}
+
+fn clone_bot_template_repo(
+    join_set: &mut tokio::task::JoinSet<Result<()>>,
+    cfg: &mut config::project::ProjectConfig,
+    launcher_dir: &Path,
+) {
+    let url = cfg.game_config.bot.template_url.to_owned();
+    let target = config::bot_templates_dir(launcher_dir).join("template");
+    cfg.bot_template_path = target.clone();
+    join_set.spawn_blocking(move || Repository::clone(&url, &target, true).map(|_| ()));
 }
