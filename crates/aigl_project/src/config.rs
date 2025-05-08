@@ -22,12 +22,12 @@ pub(crate) fn uv_cache_dir(launcher_root: &Path) -> PathBuf {
     launcher_root.join(UV_CACHE_DIR_NAME)
 }
 
-pub(crate) fn bot_templates_dir(launcher_root: &Path) -> PathBuf {
-    launcher_root.join(BOT_TEMPLATES_DIR_NAME)
+pub(crate) fn bot_templates_dir(project_root: &Path) -> PathBuf {
+    launcher_dir(project_root).join(BOT_TEMPLATES_DIR_NAME)
 }
 
-pub(crate) fn project_config_file(launcher_root: &Path) -> PathBuf {
-    launcher_root.join(PROJECT_CONFIG_FILE_NAME)
+pub(crate) fn project_config_file(project_root: &Path) -> PathBuf {
+    launcher_dir(project_root).join(PROJECT_CONFIG_FILE_NAME)
 }
 
 /// Initialise the environment for the given project directory.

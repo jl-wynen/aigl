@@ -4,6 +4,7 @@ use aigl_system::fs::create_output_directory;
 use anyhow::{Result, bail};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
+use std::sync::{Arc, Mutex};
 
 pub struct Project {
     root: PathBuf,
@@ -12,12 +13,15 @@ pub struct Project {
 }
 
 impl Project {
-    pub async fn init(path: PathBuf, game_config: config::game::GameConfig) -> Result<Self> {
+    pub async fn init(
+        path: PathBuf,
+        game_config: config::game::GameConfig,
+    ) -> Result<Arc<Mutex<Self>>> {
         create_output_directory(&path).await?;
         let launcher_dir = init_launcher_dir(&path).await?;
         let python_cache = init_python_cache(&launcher_dir)?;
 
-        let mut project = Self {
+        let project = Arc::new(Mutex::new(Self {
             root: path,
             python_cache,
             cfg: config::project::ProjectConfig {
@@ -26,29 +30,18 @@ impl Project {
                 bot_template_path: PathBuf::new(),
                 venv_paths: HashMap::new(),
             },
-        };
+        }));
 
-        let mut tasks = tokio::task::JoinSet::new();
-        clone_game_repo(&mut tasks, &mut project.cfg, &project.root);
-        clone_bot_template_repo(&mut tasks, &mut project.cfg, &launcher_dir);
+        set_up_repos(project.clone()).await?;
 
-        if let Some(err) = tasks
-            .join_all()
-            .await
-            .into_iter()
-            .find_map(|result| result.err())
-        {
-            bail!(err);
-        };
-
-        // TODO make this run stuff in parallel
-        // TODO clone game + bot template
-        // TODO render bot for pre-configured player (also add pre-configured bots to cfg)
         // TODO create venvs
         // TODO install packages
 
-        project.save_config().await?;
-        untag_dir_as_incomplete(&launcher_dir).await?;
+        {
+            let project = project.lock().expect("Failed to get project lock");
+            project.save_config().await?;
+            untag_dir_as_incomplete(&launcher_dir).await?;
+        }
         Ok(project)
     }
 
@@ -65,8 +58,7 @@ impl Project {
         }
 
         let cfg =
-            config::project::ProjectConfig::load_json(&config::project_config_file(&launcher_dir))
-                .await?;
+            config::project::ProjectConfig::load_json(&config::project_config_file(&path)).await?;
         let python_cache = open_python_cache(&launcher_dir)?;
         Ok(Self {
             root: path,
@@ -97,9 +89,7 @@ impl Project {
 
     async fn save_config(&self) -> Result<()> {
         self.cfg
-            .save_json(&config::project_config_file(&config::launcher_dir(
-                &self.root,
-            )))
+            .save_json(&config::project_config_file(&self.root))
             .await
     }
 }
@@ -110,7 +100,7 @@ async fn init_launcher_dir(project_root: &Path) -> Result<PathBuf> {
     tag_dir_as_incomplete(&launcher_dir).await?;
     tokio::fs::write(launcher_dir.join(".gitignore"), "*").await?;
 
-    let bots_dir = launcher_dir.join("bots");
+    let bots_dir = config::bot_templates_dir(&launcher_dir);
     create_output_directory(&bots_dir).await?;
     cachedir::ensure_tag(&bots_dir)?;
 
@@ -135,24 +125,77 @@ fn open_python_cache(launcher_dir: &Path) -> Result<aigl_python::Cache> {
     aigl_python::Cache::discover(&config::uv_cache_dir(launcher_dir))
 }
 
-fn clone_game_repo(
-    join_set: &mut tokio::task::JoinSet<Result<()>>,
-    cfg: &mut config::project::ProjectConfig,
-    project_root: &Path,
-) {
-    let url = cfg.game_config.game.url.to_owned();
-    let target = project_root.join(&cfg.game_config.name);
-    cfg.game_path = target.clone();
-    join_set.spawn_blocking(move || Repository::clone(&url, &target, false).map(|_| ()));
+fn clone_game_repo(join_set: &mut tokio::task::JoinSet<Result<()>>, project: Arc<Mutex<Project>>) {
+    join_set.spawn_blocking(move || {
+        let mut project = project.lock().expect("Failed to get project lock");
+        let url = project.cfg.game_config.game.url.to_owned();
+        let target = project.root.join(&project.cfg.game_config.name);
+        match Repository::clone(&url, &target, false) {
+            Ok(_) => {
+                project.cfg.game_path = target.clone();
+                Ok(())
+            }
+            Err(err) => Err(err),
+        }
+    });
 }
 
-fn clone_bot_template_repo(
+fn clone_bot_template_repo(project: Arc<Mutex<Project>>) -> Result<()> {
+    let mut project = project.lock().expect("Failed to get project lock");
+    let url = project.cfg.game_config.bot.template_url.to_owned();
+    let target = config::bot_templates_dir(&project.root).join("template");
+    match Repository::clone(&url, &target, true) {
+        Ok(_) => {
+            project.cfg.bot_template_path = target.clone();
+            Ok(())
+        }
+        Err(err) => Err(err),
+    }
+}
+
+async fn render_bot_template(project: Arc<Mutex<Project>>, target: &Path) -> Result<()> {
+    let src = {
+        let project = project.lock().expect("Failed to get project lock");
+        project.cfg.bot_template_path.clone()
+    };
+
+    aigl_template::render_directory(&src, target, &aigl_template::context! {}).await
+}
+
+fn set_up_initial_bots(
     join_set: &mut tokio::task::JoinSet<Result<()>>,
-    cfg: &mut config::project::ProjectConfig,
-    launcher_dir: &Path,
+    project: Arc<Mutex<Project>>,
 ) {
-    let url = cfg.game_config.bot.template_url.to_owned();
-    let target = config::bot_templates_dir(launcher_dir).join("template");
-    cfg.bot_template_path = target.clone();
-    join_set.spawn_blocking(move || Repository::clone(&url, &target, true).map(|_| ()));
+    join_set.spawn(async move {
+        let clone_project = project.clone();
+        tokio::task::spawn_blocking(move || clone_bot_template_repo(clone_project)).await??;
+
+        let mut tasks = tokio::task::JoinSet::<Result<()>>::new();
+        tasks.spawn(async move {
+            let target = {
+                let lock = project.lock().expect("Failed to get project lock");
+                lock.root.join("bot")
+            };
+            render_bot_template(project.clone(), &target).await?;
+            Ok(())
+        });
+        // TODO render default bots
+        tasks.join_all().await;
+        Ok(())
+    });
+}
+
+async fn set_up_repos(project: Arc<Mutex<Project>>) -> Result<()> {
+    let mut tasks = tokio::task::JoinSet::new();
+    set_up_initial_bots(&mut tasks, project.clone());
+    clone_game_repo(&mut tasks, project.clone());
+    match tasks
+        .join_all()
+        .await
+        .into_iter()
+        .find_map(|result| result.err())
+    {
+        None => Ok(()),
+        Some(err) => Err(err),
+    }
 }

@@ -3,6 +3,7 @@ use std::path::Path;
 
 const CACHE_DIR_NAME: &str = "uv_cache";
 
+#[derive(Clone, Debug)]
 pub struct Cache {
     underlying: uv_cache::Cache,
 }
