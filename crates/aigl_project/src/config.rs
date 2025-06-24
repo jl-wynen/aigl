@@ -158,11 +158,13 @@ pub mod game {
 
     impl GameConfig {
         pub async fn load_toml(path: &Path) -> Result<Self> {
-            Ok(toml::from_str(&tokio::fs::read_to_string(path).await?)?)
+            Ok(toml_edit::de::from_str(
+                &tokio::fs::read_to_string(path).await?,
+            )?)
         }
 
         pub async fn save_toml(&self, path: &Path) -> Result<()> {
-            tokio::fs::write(path, toml::to_string(self)?).await?;
+            tokio::fs::write(path, toml_edit::ser::to_string(self)?).await?;
             Ok(())
         }
     }

@@ -17,7 +17,7 @@ anyhow = { workspace = true }
 cachedir = { workspace = true }
 rand = { workspace = true }
 tokio = { workspace = true }
-toml = { workspace = true }
+toml_edit = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 
