@@ -5,7 +5,7 @@ use std::sync::{Arc, Mutex};
 
 use crate::Project;
 
-type BotRenderArgs = HashMap<String, String>;
+pub type BotRenderArgs = HashMap<String, String>;
 
 pub(crate) struct Bot {
     root: PathBuf,

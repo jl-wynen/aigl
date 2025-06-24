@@ -1,10 +1,12 @@
 use anyhow::{Result, bail};
 use std::collections::HashMap;
+use std::ops::DerefMut;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
-use crate::bot::Bot;
+use crate::bot::{Bot, BotRenderArgs};
 use crate::config;
+use crate::unique_selection::UniqueRandomSelection;
 use aigl_git::Repository;
 use aigl_system::fs::create_output_directory;
 
@@ -12,6 +14,8 @@ pub struct Project {
     root: PathBuf,
     python_cache: aigl_python::Cache,
     cfg: config::project::ProjectConfig,
+    name_gen: UniqueRandomSelection<String>,
+    color_gen: UniqueRandomSelection<String>,
 }
 
 impl Project {
@@ -32,6 +36,8 @@ impl Project {
                 bot_template_path: PathBuf::new(),
                 venv_paths: HashMap::new(),
             },
+            name_gen: crate::bot_names::bot_name_selection(std::iter::empty::<String>()),
+            color_gen: crate::bot_colors::bot_color_selection(std::iter::empty::<String>()),
         }));
 
         set_up_repos(project.clone()).await?;
@@ -66,6 +72,9 @@ impl Project {
             root: path,
             python_cache,
             cfg,
+            // TODO load used names and colors
+            name_gen: crate::bot_names::bot_name_selection(std::iter::empty::<String>()),
+            color_gen: crate::bot_colors::bot_color_selection(std::iter::empty::<String>()),
         })
     }
 
@@ -167,27 +176,71 @@ fn set_up_initial_bots(
         let clone_project = project.clone();
         tokio::task::spawn_blocking(move || clone_bot_template_repo(clone_project)).await??;
 
-        let mut tasks = tokio::task::JoinSet::<Result<()>>::new();
+        let n_bots = match project
+            .lock()
+            .expect("Failed to get project lock")
+            .cfg
+            .game_config
+            .players
+        {
+            config::game::Players::FFA { n_min, .. } => n_min,
+            config::game::Players::Teams { .. } => {
+                todo!("Support for teams is not implemented")
+            }
+        };
+
+        let mut tasks = tokio::task::JoinSet::<Result<Bot>>::new();
+        let project_clone = project.clone();
         tasks.spawn(async move {
-            let target = {
-                let lock = project.lock().expect("Failed to get project lock");
-                lock.root.join("bot")
-            };
-            Bot::render_template(
-                project.clone(),
-                &target,
+            render_player_bot(
+                project_clone,
+                "bot",
                 &HashMap::from([
                     ("name".into(), "Testo".into()),
                     ("color".into(), "#ff0000".into()),
                 ]),
             )
-            .await?;
-            Ok(())
+            .await
         });
-        // TODO render default bots
+        for i in (1..n_bots) {
+            let project_clone = project.clone();
+            tasks.spawn(async move {
+                render_template_bot(project_clone, &format!("bot_{i}"), HashMap::new()).await
+            });
+        }
         tasks.join_all().await;
         Ok(())
     });
+}
+
+async fn render_player_bot(
+    project: Arc<Mutex<Project>>,
+    bot_name: &str,
+    args: &BotRenderArgs,
+) -> Result<Bot> {
+    let target = {
+        let lock = project.lock().expect("Failed to get project lock");
+        lock.root.join(bot_name)
+    };
+    Bot::render_template(project.clone(), &target, args).await
+}
+
+async fn render_template_bot(
+    project: Arc<Mutex<Project>>,
+    bot_name: &str,
+    mut args: BotRenderArgs,
+) -> Result<Bot> {
+    let (target, name, color) = {
+        let mut lock = project.lock().expect("Failed to get project lock");
+        (
+            lock.root.join(bot_name),
+            lock.name_gen.pop(),
+            lock.color_gen.pop(),
+        )
+    };
+    args.insert("name".to_string(), name);
+    args.insert("color".to_string(), color);
+    Bot::render_template(project.clone(), &target, &args).await
 }
 
 async fn set_up_repos(project: Arc<Mutex<Project>>) -> Result<()> {
