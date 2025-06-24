@@ -1,0 +1,24 @@
+{
+  "game": {},
+  "bots": [
+    {
+      "id": "123",
+      "path": "to/the/source",
+      "name": "Botulf",
+      "template_args": {
+        "colour": "#ff0"
+      }
+    }
+  ],
+  "venv": "path/to/shared/venv",
+  "players": [
+    {
+      "id": "123",
+      "name": "Botulf"
+    },
+    {
+      "id": "123",
+      "name": "Botulf2"
+    }
+  ]
+}

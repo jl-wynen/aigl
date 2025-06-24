@@ -15,7 +15,10 @@ async fn run() -> Result<()> {
     }
 
     let cfg = aigl_project::config::game::GameConfig::load_toml(
-        &project_root().parent().unwrap().join("supremacy.toml"),
+        &project_root()
+            .parent()
+            .unwrap()
+            .join("resources/test_game.toml"),
     )
     .await?;
     let project = Project::init(project_root(), cfg).await?;

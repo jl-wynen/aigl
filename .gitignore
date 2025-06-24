@@ -1,3 +1,6 @@
 /target
 # Folder for manual tests
 project
+
+testing/aigl_test_bot
+testing/aigl_test_game
