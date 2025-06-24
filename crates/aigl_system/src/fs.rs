@@ -1,5 +1,6 @@
 use anyhow::{Context, bail};
-use std::path::Path;
+use std::fs;
+use std::path::{Path, PathBuf};
 
 pub async fn create_output_directory(path: &Path) -> anyhow::Result<()> {
     if path.exists() {
@@ -22,4 +23,27 @@ pub async fn directory_is_empty(path: &Path) -> bool {
         return false;
     };
     children.next_entry().await.is_err()
+}
+
+pub async fn copy_dir_recursive(
+    src: impl Into<PathBuf>,
+    dst: impl Into<PathBuf>,
+) -> anyhow::Result<()> {
+    let src = src.into();
+    let dst = dst.into();
+    tokio::task::spawn_blocking(move || copy_dir_recursive_blocking(&src, &dst)).await?
+}
+
+fn copy_dir_recursive_blocking(src: &Path, dst: &Path) -> anyhow::Result<()> {
+    fs::create_dir_all(dst)?;
+    for entry in fs::read_dir(src)? {
+        let entry = entry?;
+        let ty = entry.file_type()?;
+        if ty.is_dir() {
+            copy_dir_recursive_blocking(&entry.path(), &dst.join(entry.file_name()))?;
+        } else {
+            fs::copy(entry.path(), dst.join(entry.file_name()))?;
+        }
+    }
+    Ok(())
 }

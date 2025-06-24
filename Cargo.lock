@@ -192,7 +192,6 @@ dependencies = [
  "aigl_git",
  "aigl_python",
  "aigl_system",
- "aigl_template",
  "anyhow",
  "cachedir",
  "pretty_assertions",
@@ -232,17 +231,6 @@ dependencies = [
  "serde_json",
  "tokio",
  "tracing",
-]
-
-[[package]]
-name = "aigl_template"
-version = "0.1.0"
-dependencies = [
- "aigl_system",
- "anyhow",
- "minijinja",
- "pretty_assertions",
- "tokio",
 ]
 
 [[package]]
@@ -3123,15 +3111,6 @@ checksum = "f7c44f8e672c00fe5308fa235f821cb4198414e1c77935c1ab6948d3fd78550e"
 dependencies = [
  "mime",
  "unicase",
-]
-
-[[package]]
-name = "minijinja"
-version = "2.9.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "98642a6dfca91122779a307b77cd07a4aa951fbe32232aaf5bad9febc66be754"
-dependencies = [
- "serde",
 ]
 
 [[package]]

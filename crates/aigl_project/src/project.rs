@@ -1,10 +1,11 @@
-use super::config;
-use aigl_git::Repository;
-use aigl_system::fs::create_output_directory;
 use anyhow::{Result, bail};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
+
+use super::config;
+use aigl_git::Repository;
+use aigl_system::fs::{copy_dir_recursive, create_output_directory};
 
 pub struct Project {
     root: PathBuf,
@@ -158,8 +159,7 @@ async fn render_bot_template(project: Arc<Mutex<Project>>, target: &Path) -> Res
         let project = project.lock().expect("Failed to get project lock");
         project.cfg.bot_template_path.clone()
     };
-
-    aigl_template::render_directory(&src, target, &aigl_template::context! {}).await
+    copy_dir_recursive(&src, target).await
 }
 
 fn set_up_initial_bots(
