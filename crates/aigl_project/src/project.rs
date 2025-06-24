@@ -3,9 +3,10 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
-use super::config;
+use crate::bot::Bot;
+use crate::config;
 use aigl_git::Repository;
-use aigl_system::fs::{copy_dir_recursive, create_output_directory};
+use aigl_system::fs::create_output_directory;
 
 pub struct Project {
     root: PathBuf,
@@ -84,6 +85,10 @@ impl Project {
         }
     }
 
+    pub fn cfg(&self) -> &config::project::ProjectConfig {
+        &self.cfg
+    }
+
     pub fn venv(&self) -> Result<aigl_python::VirtualEnvironment> {
         aigl_python::VirtualEnvironment::open(self.venv_path()?.to_owned(), self.python_cache())
     }
@@ -154,14 +159,6 @@ fn clone_bot_template_repo(project: Arc<Mutex<Project>>) -> Result<()> {
     }
 }
 
-async fn render_bot_template(project: Arc<Mutex<Project>>, target: &Path) -> Result<()> {
-    let src = {
-        let project = project.lock().expect("Failed to get project lock");
-        project.cfg.bot_template_path.clone()
-    };
-    copy_dir_recursive(&src, target).await
-}
-
 fn set_up_initial_bots(
     join_set: &mut tokio::task::JoinSet<Result<()>>,
     project: Arc<Mutex<Project>>,
@@ -176,7 +173,15 @@ fn set_up_initial_bots(
                 let lock = project.lock().expect("Failed to get project lock");
                 lock.root.join("bot")
             };
-            render_bot_template(project.clone(), &target).await?;
+            Bot::render_template(
+                project.clone(),
+                &target,
+                &HashMap::from([
+                    ("name".into(), "Testo".into()),
+                    ("color".into(), "#ff0000".into()),
+                ]),
+            )
+            .await?;
             Ok(())
         });
         // TODO render default bots
