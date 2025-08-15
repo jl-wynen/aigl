@@ -213,6 +213,7 @@ dependencies = [
  "uv-configuration",
  "uv-distribution-types",
  "uv-install-wheel",
+ "uv-normalize",
  "uv-python",
  "uv-requirements",
  "uv-resolver",

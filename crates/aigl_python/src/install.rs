@@ -2,6 +2,7 @@ use crate::cache::Cache;
 use crate::settings::uv_network_settings;
 use crate::venv::VirtualEnvironment;
 use anyhow::Result;
+use std::collections::BTreeMap;
 use std::path::PathBuf;
 use uv::{
     commands::pip::{install::pip_install, operations::Modifications},
@@ -13,6 +14,7 @@ use uv_configuration::{
 };
 use uv_distribution_types::{DependencyMetadata, IndexLocations};
 use uv_install_wheel::LinkMode;
+use uv_normalize::GroupName;
 use uv_python::PythonPreference;
 use uv_resolver::{DependencyMode, PrereleaseMode, ResolutionMode};
 
@@ -38,11 +40,24 @@ impl RequirementsSource {
 
 pub async fn install(
     requirements: &[RequirementsSource],
+    groups: BTreeMap<PathBuf, Vec<String>>,
     compile: bool,
     cache: &Cache,
     environment: &VirtualEnvironment,
 ) -> Result<()> {
     let requirements = convert_requirements_to_uv(requirements)?;
+    let groups = groups
+        .into_iter()
+        .map(|(key, vals)| {
+            (
+                key,
+                vals.into_iter()
+                    .map(|val| GroupName::from_owned(val).unwrap())
+                    .collect(),
+            )
+        })
+        .collect();
+
     pip_install(
         &requirements,
         &[],
@@ -52,7 +67,7 @@ pub async fn install(
         Vec::new(),
         Vec::new(),
         &ExtrasSpecification::None,
-        Default::default(),
+        groups,
         ResolutionMode::default(),
         PrereleaseMode::default(),
         DependencyMode::Transitive,

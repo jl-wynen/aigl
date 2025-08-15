@@ -1,6 +1,5 @@
 use anyhow::{Result, bail};
-use std::collections::HashMap;
-use std::ops::DerefMut;
+use std::collections::{BTreeMap, HashMap};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
@@ -33,6 +32,7 @@ impl Project {
             cfg: config::project::ProjectConfig {
                 game_config,
                 game_path: PathBuf::new(),
+                bot_paths: Vec::new(),
                 bot_template_path: PathBuf::new(),
                 venv_paths: HashMap::new(),
             },
@@ -41,9 +41,7 @@ impl Project {
         }));
 
         set_up_repos(project.clone()).await?;
-
-        // TODO create venvs
-        // TODO install packages
+        create_venvs(project.clone()).await?;
 
         {
             let project = project.lock().expect("Failed to get project lock");
@@ -96,6 +94,10 @@ impl Project {
 
     pub fn cfg(&self) -> &config::project::ProjectConfig {
         &self.cfg
+    }
+
+    pub fn cfg_mut(&mut self) -> &mut config::project::ProjectConfig {
+        &mut self.cfg
     }
 
     pub fn venv(&self) -> Result<aigl_python::VirtualEnvironment> {
@@ -194,9 +196,9 @@ fn set_up_initial_bots(
         tasks.spawn(async move {
             render_player_bot(
                 project_clone,
-                "bot",
+                "bot", // TODO use user input
                 &HashMap::from([
-                    ("name".into(), "Testo".into()),
+                    ("name".into(), "Testo".into()), // TODO use user input
                     ("color".into(), "#ff0000".into()),
                 ]),
             )
@@ -256,4 +258,32 @@ async fn set_up_repos(project: Arc<Mutex<Project>>) -> Result<()> {
         None => Ok(()),
         Some(err) => Err(err),
     }
+}
+
+async fn create_venvs(project: Arc<Mutex<Project>>) -> Result<()> {
+    let mut lock = project.lock().expect("Failed to get project lock");
+    let python_config = &lock.cfg.game_config.python;
+    if matches!(python_config.venv, config::game::VenvKind::PerBot) {
+        bail!("Per-bot virtual environments are not supported yet");
+    };
+    let venv_dir = lock.root.join(".venv");
+    let venv = aigl_python::VirtualEnvironment::create(
+        venv_dir.clone(),
+        &python_config.version,
+        &lock.python_cache,
+    )
+    .await?;
+
+    let requirements: Vec<_> = lock
+        .cfg()
+        .bot_paths
+        .iter()
+        .map(|path| aigl_python::RequirementsSource::Editable(path.display().to_string()))
+        .collect();
+    let player_bot_path = lock.cfg().bot_paths.first().unwrap();
+    let groups = BTreeMap::from([(player_bot_path.join("pyproject.toml"), vec!["dev".into()])]);
+    aigl_python::install(&requirements, groups, true, &lock.python_cache, &venv).await?;
+
+    lock.cfg.venv_paths.insert("game".into(), venv_dir);
+    Ok(())
 }

@@ -53,6 +53,7 @@ pub mod project {
     pub struct ProjectConfig {
         pub game_config: game::GameConfig,
         pub game_path: PathBuf,
+        pub bot_paths: Vec<PathBuf>,
         pub bot_template_path: PathBuf,
         pub venv_paths: HashMap<String, PathBuf>,
     }

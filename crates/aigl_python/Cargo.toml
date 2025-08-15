@@ -16,6 +16,7 @@ uv-client = { workspace = true }
 uv-configuration = { workspace = true }
 uv-distribution-types = { workspace = true }
 uv-install-wheel = { workspace = true }
+uv-normalize = { workspace = true }
 uv-python = { workspace = true }
 uv-requirements = { workspace = true }
 uv-resolver = { workspace = true }

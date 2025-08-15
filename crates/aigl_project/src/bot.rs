@@ -17,11 +17,17 @@ impl Bot {
         target: &Path,
         args: &BotRenderArgs,
     ) -> anyhow::Result<Self> {
-        copy_bot_template(project, target).await?;
+        copy_bot_template(project.clone(), target).await?;
         let bot = Self {
             root: target.to_path_buf(),
         };
         bot.apply_args(args).await?;
+        project
+            .lock()
+            .expect("Failed to get project lock")
+            .cfg_mut()
+            .bot_paths
+            .push(target.to_path_buf());
         Ok(bot)
     }
 
@@ -34,6 +40,14 @@ impl Bot {
             config[key] = toml_edit::value(value);
         }
         tokio::fs::write(&config_path, config.to_string()).await?;
+
+        let pyproject_path = self.pyproject_file_path();
+        let mut pyproject = tokio::fs::read_to_string(&pyproject_path)
+            .await?
+            .parse::<toml_edit::DocumentMut>()?;
+        pyproject["project"]["name"] = toml_edit::value(&args["name"]);
+        tokio::fs::write(&pyproject_path, pyproject.to_string()).await?;
+
         Ok(())
     }
 
@@ -51,6 +65,10 @@ impl Bot {
 
     fn config_file_path(&self) -> anyhow::Result<PathBuf> {
         Ok(self.package_src_path()?.join("config.toml"))
+    }
+
+    fn pyproject_file_path(&self) -> PathBuf {
+        self.root.join("pyproject.toml")
     }
 }
 
