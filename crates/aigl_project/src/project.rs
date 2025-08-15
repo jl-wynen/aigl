@@ -115,7 +115,7 @@ async fn init_launcher_dir(project_root: &Path) -> Result<PathBuf> {
     tag_dir_as_incomplete(&launcher_dir).await?;
     tokio::fs::write(launcher_dir.join(".gitignore"), "*").await?;
 
-    let bots_dir = config::bot_templates_dir(&launcher_dir);
+    let bots_dir = config::bot_templates_dir(project_root);
     create_output_directory(&bots_dir).await?;
     cachedir::ensure_tag(&bots_dir)?;
 
