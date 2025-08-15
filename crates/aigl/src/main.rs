@@ -11,6 +11,7 @@ fn project_root() -> PathBuf {
 
 async fn run() -> Result<()> {
     if project_root().exists() {
+        // TODO
         tokio::fs::remove_dir_all(project_root()).await?;
     }
 

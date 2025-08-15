@@ -54,10 +54,6 @@ where
             (self.fallback)(self.n_fallbacks)
         })
     }
-
-    pub fn push(&mut self, value: T) {
-        self.choices.push_front(value);
-    }
 }
 
 #[cfg(test)]
@@ -86,19 +82,6 @@ mod tests {
         let _ = selection.pop(); // skip over given choice
         let drawn: HashSet<_> = (0..2).map(|_| selection.pop()).collect();
         assert_eq!(drawn, HashSet::from(["1".to_string(), "2".to_string()]));
-    }
-
-    #[test]
-    fn unique_random_selection_choices_reappear_after_being_put_back() {
-        let choices = ["A", "B"];
-        let used: [&str; 0] = [];
-        let fallback = |i| format!("{i}");
-        let mut selection = UniqueRandomSelection::new(choices, used, fallback);
-
-        let a = selection.pop();
-        selection.push(a);
-        let drawn: HashSet<_> = (0..2).map(|_| selection.pop()).collect();
-        assert_eq!(drawn, HashSet::from(["A".to_string(), "B".to_string()]));
     }
 
     #[test]

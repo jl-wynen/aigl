@@ -12,7 +12,6 @@ use uv_settings::PythonInstallMirrors;
 use uv_virtualenv::Prompt;
 
 pub struct VirtualEnvironment {
-    root: PathBuf,
     python_environment: PythonEnvironment,
 }
 
@@ -54,10 +53,7 @@ impl VirtualEnvironment {
 
     fn new(root: PathBuf, cache: &Cache) -> Result<Self> {
         let python_environment = PythonEnvironment::from_root(&root, cache.underlying())?;
-        Ok(Self {
-            root,
-            python_environment,
-        })
+        Ok(Self { python_environment })
     }
 
     pub fn prepare_python_command(&self) -> Command {
