@@ -1,6 +1,8 @@
-use crate::components;
-use crate::game_config::GameConfig;
 use eframe::egui::{self};
+
+use crate::components;
+use crate::game_config::fetch_game_config;
+use aigl_project::config::game::GameConfig;
 
 pub struct GameInstallApp {
     screen: Screen,
@@ -25,6 +27,7 @@ enum Screen {
 #[derive(Debug, Default)]
 struct SelectGameState {
     game_code: String,
+    error: Option<String>,
 }
 
 #[derive(Debug, Default)]
@@ -121,13 +124,24 @@ impl GameInstallApp {
                 )
                 .clicked()
             {
-                self.game_config = Some(GameConfig {
-                    name: "Test game".to_owned(),
-                });
+                match fetch_game_config(&state.game_code) {
+                    Ok(config) => {
+                        self.game_config = Some(config);
+                        state.error = None;
+                    }
+                    Err(err) => {
+                        self.game_config = None;
+                        state.error = Some(err.to_string());
+                    }
+                }
             }
         });
 
-        if let Some(game_config) = &self.game_config {
+        if let Some(error) = &state.error {
+            ui.label(
+                egui::RichText::new(format!("Error: {error}")).color(ui.visuals().error_fg_color),
+            );
+        } else if let Some(game_config) = &self.game_config {
             ui.label(format!("Game name: {}", game_config.name));
         }
         ui.add_space(50.0);

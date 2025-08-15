@@ -10,19 +10,14 @@ fn project_root() -> PathBuf {
 }
 
 async fn run() -> Result<()> {
-    if project_root().exists() {
-        // TODO
-        tokio::fs::remove_dir_all(project_root()).await?;
-    }
-
-    let cfg = aigl_project::config::game::GameConfig::load_toml(
-        &project_root()
-            .parent()
-            .unwrap()
-            .join("resources/test_game.toml"),
-    )
-    .await?;
-    let project = Project::init(project_root(), cfg).await?;
+    // let cfg = aigl_project::config::game::GameConfig::load_toml(
+    //     &project_root()
+    //         .parent()
+    //         .unwrap()
+    //         .join("resources/test_game.toml"),
+    // )
+    // .await?;
+    // let project = Project::init(project_root(), cfg).await?;
 
     // let venv = aigl_python::VirtualEnvironment::create(
     //     project_root().join(".venv"),
@@ -50,11 +45,13 @@ async fn run() -> Result<()> {
 }
 
 fn main() {
-    // aigl_app::GameInstallApp::run();
     // Safety: This is single threaded code.
     unsafe {
         aigl_project::config::init_environment(&project_root());
     }
+
+    aigl_app::GameInstallApp::run();
+    return;
 
     let runtime = tokio::runtime::Builder::new_current_thread()
         .enable_all()

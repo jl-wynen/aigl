@@ -9,10 +9,13 @@ authors.workspace = true
 license.workspace = true
 
 [dependencies]
+aigl_project = { path = "../aigl_project" }
+
 anyhow = { workspace = true }
 eframe = { workspace = true }
 egui-phosphor = { workspace = true }
 lazy_static = { workspace = true, optional = true }
+reqwest = { workspace = true }
 rfd = { workspace = true }
 ron = { workspace = true, optional = true }
 serde = { workspace = true, optional = true }

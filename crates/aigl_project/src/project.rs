@@ -204,7 +204,7 @@ fn set_up_initial_bots(
             )
             .await
         });
-        for i in (1..n_bots) {
+        for i in 1..n_bots {
             let project_clone = project.clone();
             tasks.spawn(async move {
                 render_template_bot(project_clone, &format!("bot_{i}"), HashMap::new()).await
