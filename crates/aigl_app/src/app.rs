@@ -2,7 +2,7 @@ use eframe::egui::{self};
 
 use crate::components;
 use crate::game_config::fetch_game_config;
-use aigl_project::config::game::GameConfig;
+use aigl_project::config::{game::GameConfig, project::BotArg};
 
 pub struct GameInstallApp {
     screen: Screen,
@@ -31,7 +31,10 @@ struct SelectGameState {
 }
 
 #[derive(Debug, Default)]
-struct ConfigurePlayerState {}
+struct ConfigurePlayerState {
+    name: String,
+    args: Vec<BotArg>,
+}
 
 #[derive(Debug, Default)]
 struct SelectLocationState {
@@ -126,6 +129,12 @@ impl GameInstallApp {
             {
                 match fetch_game_config(&state.game_code) {
                     Ok(config) => {
+                        self.configure_player_state.args = config
+                            .bot
+                            .template_args
+                            .values()
+                            .map(|arg| BotArg::from_template_arg(arg.clone()))
+                            .collect();
                         self.game_config = Some(config);
                         state.error = None;
                     }
@@ -138,16 +147,23 @@ impl GameInstallApp {
         });
 
         if let Some(error) = &state.error {
-            ui.label(
-                egui::RichText::new(format!("Error: {error}")).color(ui.visuals().error_fg_color),
-            );
+            ui.colored_label(ui.visuals().error_fg_color, format!("Error: {error}"));
         } else if let Some(game_config) = &self.game_config {
             ui.label(format!("Game name: {}", game_config.name));
         }
         ui.add_space(50.0);
     }
 
-    fn show_configure_player_central_panel(&mut self, ui: &mut egui::Ui) {}
+    fn show_configure_player_central_panel(&mut self, ui: &mut egui::Ui) {
+        let Some(config) = &self.game_config else {
+            return; // should never happen
+        };
+
+        // TODO inputs for name and args
+        for (key, arg) in &config.bot.template_args {
+            ui.label(format!("{key}: {}, {}, {:?}", arg.var, arg.display, arg.ty));
+        }
+    }
 
     fn show_select_location_central_panel(&mut self, ui: &mut egui::Ui) {
         let state = &mut self.select_location_state;

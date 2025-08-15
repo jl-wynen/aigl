@@ -21,6 +21,7 @@ impl Project {
     pub async fn init(
         path: PathBuf,
         game_config: config::game::GameConfig,
+        player_bot_args: Vec<config::project::BotArg>,
     ) -> Result<Arc<Mutex<Self>>> {
         create_output_directory(&path).await?;
         let launcher_dir = init_launcher_dir(&path).await?;
@@ -33,6 +34,7 @@ impl Project {
                 game_config,
                 game_path: PathBuf::new(),
                 bot_paths: Vec::new(),
+                bot_args: vec![player_bot_args],
                 bot_template_path: PathBuf::new(),
                 venv_paths: HashMap::new(),
             },

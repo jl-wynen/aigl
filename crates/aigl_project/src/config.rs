@@ -48,12 +48,15 @@ pub unsafe fn init_environment(project_root: &Path) {
 
 pub mod project {
     use super::*;
+    use crate::config::game::{BotTemplateArg, BotTemplateArgType};
 
     #[derive(Clone, Debug, Serialize, Deserialize)]
     pub struct ProjectConfig {
         pub game_config: game::GameConfig,
         pub game_path: PathBuf,
+        // The first bot is the player
         pub bot_paths: Vec<PathBuf>,
+        pub bot_args: Vec<Vec<BotArg>>,
         pub bot_template_path: PathBuf,
         pub venv_paths: HashMap<String, PathBuf>,
     }
@@ -68,6 +71,35 @@ pub mod project {
         pub async fn save_json(&self, path: &Path) -> Result<()> {
             tokio::fs::write(path, serde_json::to_string(self)?).await?;
             Ok(())
+        }
+    }
+
+    #[derive(Clone, Debug, Serialize, Deserialize)]
+    pub enum BotArgValue {
+        String(String),
+        Color([u8; 4]),
+        Path(PathBuf),
+    }
+
+    #[derive(Clone, Debug, Serialize, Deserialize)]
+    pub struct BotArg {
+        pub var: String,
+        pub display: String,
+        pub value: BotArgValue,
+    }
+
+    impl BotArg {
+        pub fn from_template_arg(template_arg: BotTemplateArg) -> Self {
+            let value = match template_arg.ty {
+                BotTemplateArgType::String => BotArgValue::String(String::new()),
+                BotTemplateArgType::Color => BotArgValue::Color([255; 4]),
+                BotTemplateArgType::Path => BotArgValue::Path(PathBuf::new()),
+            };
+            Self {
+                var: template_arg.var,
+                display: template_arg.display,
+                value,
+            }
         }
     }
 }
