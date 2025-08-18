@@ -78,7 +78,7 @@ pub mod project {
     pub enum BotArgValue {
         String(String),
         Color([u8; 4]),
-        Path(PathBuf),
+        Path(String),
     }
 
     #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -93,7 +93,7 @@ pub mod project {
             let value = match template_arg.ty {
                 BotTemplateArgType::String => BotArgValue::String(String::new()),
                 BotTemplateArgType::Color => BotArgValue::Color([255; 4]),
-                BotTemplateArgType::Path => BotArgValue::Path(PathBuf::new()),
+                BotTemplateArgType::Path => BotArgValue::Path(String::new()),
             };
             Self {
                 var: template_arg.var,

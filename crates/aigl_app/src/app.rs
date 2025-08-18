@@ -155,14 +155,11 @@ impl GameInstallApp {
     }
 
     fn show_configure_player_central_panel(&mut self, ui: &mut egui::Ui) {
-        let Some(config) = &self.game_config else {
-            return; // should never happen
-        };
+        let state = &mut self.configure_player_state;
 
-        components::text_field(ui, "Name", &mut self.configure_player_state.name);
-
-        for (key, arg) in &config.bot.template_args {
-            ui.label(format!("{key}: {}, {}, {:?}", arg.var, arg.display, arg.ty));
+        components::text_input(ui, "Name", &mut state.name);
+        for arg in state.args.iter_mut() {
+            components::bot_arg_input(ui, arg);
         }
     }
 
