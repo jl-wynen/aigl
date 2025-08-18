@@ -1,8 +1,6 @@
-use eframe::egui::{self, InnerResponse, Response, ecolor::Hsva};
-use std::path::PathBuf;
+use eframe::egui::{self, InnerResponse, Response};
 
 use crate::components;
-use crate::components::NavClicked;
 use aigl_project::config::project::{BotArg, BotArgValue};
 
 pub fn text_input(ui: &mut egui::Ui, label: &str, text: &mut String) -> InnerResponse<Response> {

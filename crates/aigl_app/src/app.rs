@@ -116,7 +116,7 @@ impl GameInstallApp {
     fn show_select_game_central_panel(&mut self, ui: &mut egui::Ui) {
         let state = &mut self.select_game_state;
 
-        let label = ui.label("Enter game code:");
+        ui.label("Enter game code:");
         ui.horizontal(|ui| {
             let input = components::button_input(
                 ui,
