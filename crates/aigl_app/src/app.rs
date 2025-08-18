@@ -159,7 +159,8 @@ impl GameInstallApp {
             return; // should never happen
         };
 
-        // TODO inputs for name and args
+        components::text_field(ui, "Name", &mut self.configure_player_state.name);
+
         for (key, arg) in &config.bot.template_args {
             ui.label(format!("{key}: {}, {}, {:?}", arg.var, arg.display, arg.ty));
         }
