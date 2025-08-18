@@ -118,15 +118,13 @@ impl GameInstallApp {
 
         let label = ui.label("Enter game code:");
         ui.horizontal(|ui| {
-            ui.text_edit_singleline(&mut state.game_code)
-                .labelled_by(label.id);
-            if ui
-                .add_enabled(
-                    !state.game_code.is_empty(),
-                    components::icon_button("Fetch", egui_phosphor::regular::DOWNLOAD_SIMPLE),
-                )
-                .clicked()
-            {
+            let input = components::button_input(
+                ui,
+                &mut state.game_code,
+                "Fetch",
+                egui_phosphor::regular::DOWNLOAD_SIMPLE,
+            );
+            if input.inner.accepted {
                 match fetch_game_config(&state.game_code) {
                     Ok(config) => {
                         self.configure_player_state.args = config
