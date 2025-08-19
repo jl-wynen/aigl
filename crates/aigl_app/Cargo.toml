@@ -20,6 +20,7 @@ rfd = { workspace = true }
 ron = { workspace = true, optional = true }
 serde = { workspace = true, optional = true }
 serde_derive = { workspace = true, optional = true }
+tokio = { workspace = true }
 
 [dev-dependencies]
 pretty_assertions = { workspace = true }

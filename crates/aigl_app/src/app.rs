@@ -1,7 +1,10 @@
 use eframe::egui::{self};
+use std::path::PathBuf;
+use std::sync::{Arc, RwLock};
 
 use crate::components;
 use crate::game_config::fetch_game_config;
+use crate::install::{InstallThreadData, install};
 use aigl_project::{BotArg, config::game::GameConfig};
 
 pub struct GameInstallApp {
@@ -44,7 +47,10 @@ struct SelectLocationState {
 }
 
 #[derive(Debug, Default)]
-struct InstallState {}
+struct InstallState {
+    thread: Option<std::thread::JoinHandle<()>>,
+    thread_data: Arc<RwLock<InstallThreadData>>,
+}
 
 impl GameInstallApp {
     pub fn run() {
@@ -83,7 +89,10 @@ impl GameInstallApp {
             Screen::SelectGame => self.screen = Screen::ConfigurePlayer,
             Screen::ConfigurePlayer => self.screen = Screen::SelectLocation,
             Screen::SelectLocation => self.screen = Screen::Overview,
-            Screen::Overview => self.screen = Screen::Installing,
+            Screen::Overview => {
+                self.start_installation();
+                self.screen = Screen::Installing
+            }
             Screen::Installing => self.screen = Screen::Finished,
             Screen::Finished => self.exit(ui),
         }
@@ -188,11 +197,41 @@ impl GameInstallApp {
         });
     }
 
-    fn show_overview_central_panel(&mut self, _ui: &mut egui::Ui) {}
+    fn show_overview_central_panel(&mut self, ui: &mut egui::Ui) {
+        ui.label(format!(
+            "About to install into {}",
+            self.select_location_state.install_location
+        ));
+    }
 
-    fn show_installing_central_panel(&mut self, _ui: &mut egui::Ui) {}
+    fn show_installing_central_panel(&mut self, ui: &mut egui::Ui) {
+        ui.label(format!(
+            "Installing into {}",
+            self.select_location_state.install_location
+        ));
+        if let Ok(data) = self.install_state.thread_data.read() {
+            if let Some(error) = &data.error {
+                ui.colored_label(ui.visuals().error_fg_color, format!("Error: {error}"));
+            }
+        }
 
-    fn show_finished_central_panel(&mut self, _ui: &mut egui::Ui) {}
+        let Some(thread) = &self.install_state.thread else {
+            ui.colored_label(ui.visuals().error_fg_color, "Install thread missing");
+            return;
+        };
+        if thread.is_finished() {
+            self.next_screen(ui);
+        } else {
+            ui.spinner();
+        }
+    }
+
+    fn show_finished_central_panel(&mut self, ui: &mut egui::Ui) {
+        ui.label(format!(
+            "Finished installing into {}",
+            self.select_location_state.install_location
+        ));
+    }
 
     fn show_top_panel(&mut self, ui: &mut egui::Ui) {
         let heading = match self.screen {
@@ -245,6 +284,25 @@ impl GameInstallApp {
             Screen::Installing => components::NavNext::Install(false),
             Screen::Finished => components::NavNext::Finish,
         }
+    }
+
+    fn start_installation(&mut self) {
+        let data = self.install_state.thread_data.clone();
+        let target_path = PathBuf::from(&self.select_location_state.install_location);
+        let config = self.game_config.as_ref().unwrap().clone();
+        let player_bot_id = self.configure_player_state.id.clone();
+        let player_bot_name = self.configure_player_state.name.clone();
+        let player_bot_args = self.configure_player_state.args.clone();
+        self.install_state.thread = Some(std::thread::spawn(move || {
+            let _ = install(
+                data,
+                target_path,
+                config,
+                player_bot_id,
+                player_bot_name,
+                player_bot_args,
+            );
+        }));
     }
 }
 
