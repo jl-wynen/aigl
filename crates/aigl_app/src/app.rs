@@ -5,7 +5,7 @@ use std::sync::{Arc, RwLock};
 use crate::components;
 use crate::game_config::fetch_game_config;
 use crate::install::{InstallThreadData, install};
-use aigl_project::{BotArg, config::game::GameConfig};
+use aigl_project::{BotArg, config::game::GameConfig, dir_is_incomplete};
 
 pub struct GameInstallApp {
     screen: Screen,
@@ -114,7 +114,10 @@ impl GameInstallApp {
             if let Some(thread) = self.install_state.thread.take() {
                 let _ = thread.join();
             }
-            let _ = std::fs::remove_dir_all(&self.select_location_state.install_location);
+            let path = PathBuf::from(&self.select_location_state.install_location);
+            if dir_is_incomplete(&path) {
+                let _ = std::fs::remove_dir_all(path);
+            }
         }
         ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close);
     }

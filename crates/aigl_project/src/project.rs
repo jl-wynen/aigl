@@ -143,6 +143,10 @@ async fn untag_dir_as_incomplete(dir: &Path) -> Result<()> {
     Ok(())
 }
 
+pub fn dir_is_incomplete(dir: &Path) -> bool {
+    dir.join("aigl_in_progress").exists()
+}
+
 fn init_python_cache(launcher_dir: &Path) -> Result<aigl_python::Cache> {
     aigl_python::Cache::init(&config::uv_cache_dir(launcher_dir))
 }
