@@ -2,21 +2,26 @@ use crate::cache::Cache;
 use crate::settings::uv_network_settings;
 use crate::venv::VirtualEnvironment;
 use anyhow::Result;
-use std::collections::BTreeMap;
 use std::path::PathBuf;
 use uv::{
     commands::pip::{install::pip_install, operations::Modifications},
     printer::Printer,
 };
 use uv_configuration::{
-    BuildOptions, Concurrency, ConfigSettings, DryRun, ExtrasSpecification, IndexStrategy,
-    KeyringProviderType, PreviewMode, Reinstall, SourceStrategy, Upgrade,
+    BuildOptions, Concurrency, DryRun, ExtrasSpecification, IndexStrategy, KeyringProviderType,
+    Reinstall, SourceStrategy, Upgrade,
 };
-use uv_distribution_types::{DependencyMetadata, IndexLocations};
+use uv_distribution_types::{
+    ConfigSettings, DependencyMetadata, ExtraBuildVariables, IndexLocations, PackageConfigSettings,
+};
 use uv_install_wheel::LinkMode;
-use uv_normalize::GroupName;
-use uv_python::PythonPreference;
-use uv_resolver::{DependencyMode, PrereleaseMode, ResolutionMode};
+use uv_normalize::{GroupName, PipGroupName};
+use uv_python::{PythonPreference, Target};
+use uv_requirements::GroupsSpecification;
+use uv_resolver::{
+    DependencyMode, ExcludeNewer, ExcludeNewerPackage, PrereleaseMode, ResolutionMode,
+};
+use uv_workspace::pyproject::ExtraBuildDependencies;
 
 #[derive(Debug, Clone)]
 pub enum RequirementsSource {
@@ -31,32 +36,29 @@ impl RequirementsSource {
         match self {
             RequirementsSource::Package(package) => Ok(uvr::from_package_argument(package)?),
             RequirementsSource::Editable(editable) => Ok(uvr::from_editable(editable)?),
-            RequirementsSource::RequirementsTxt(path) => {
-                Ok(uvr::from_requirements_file(path.clone()))
-            }
+            RequirementsSource::RequirementsTxt(path) => uvr::from_requirements_file(path.clone()),
         }
     }
 }
 
 pub async fn install(
     requirements: &[RequirementsSource],
-    groups: BTreeMap<PathBuf, Vec<String>>,
+    groups: impl IntoIterator<Item = (PathBuf, String)>,
     compile: bool,
     cache: &Cache,
     environment: &VirtualEnvironment,
 ) -> Result<()> {
     let requirements = convert_requirements_to_uv(requirements)?;
-    let groups = groups
-        .into_iter()
-        .map(|(key, vals)| {
-            (
-                key,
-                vals.into_iter()
-                    .map(|val| GroupName::from_owned(val).unwrap())
-                    .collect(),
-            )
-        })
-        .collect();
+    let groups = GroupsSpecification {
+        root: PathBuf::new(),
+        groups: groups
+            .into_iter()
+            .map(|(path, name)| PipGroupName {
+                path: Some(path),
+                name: GroupName::from_owned(name).unwrap(),
+            })
+            .collect(),
+    };
 
     pip_install(
         &requirements,
@@ -66,8 +68,8 @@ pub async fn install(
         Vec::new(),
         Vec::new(),
         Vec::new(),
-        &ExtrasSpecification::None,
-        groups,
+        &ExtrasSpecification::default(),
+        &groups,
         ResolutionMode::default(),
         PrereleaseMode::default(),
         DependencyMode::Transitive,
@@ -84,27 +86,31 @@ pub async fn install(
         None,
         true,
         &ConfigSettings::default(),
+        &PackageConfigSettings::default(),
         false,
         Vec::new(),
+        &ExtraBuildDependencies::default(),
+        &ExtraBuildVariables::default(),
         BuildOptions::default(),
         Modifications::Sufficient, // Use `pip install` semantics.
         None,
         None,
         true,
-        None,
+        ExcludeNewer::new(None, ExcludeNewerPackage::default()),
         SourceStrategy::Disabled, // Prevent overriding sources.
         None,
         false,
         false,
-        None,
+        Some(Target::from(
+            environment.python_environment().root().to_owned(),
+        )),
         None,
         PythonPreference::OnlyManaged,
         Concurrency::default(),
         cache.underlying().clone(),
         DryRun::default(),
         Printer::Default, // TODO probably need more silent
-        PreviewMode::Disabled,
-        Some(environment.python_environment()),
+        Default::default(),
     )
     .await?;
     Ok(())

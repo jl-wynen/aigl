@@ -225,7 +225,13 @@ impl GameInstallApp {
             ui.colored_label(ui.visuals().error_fg_color, "Install thread missing");
             return;
         };
-        if thread.is_finished() {
+        if thread.is_finished()
+            && self
+                .install_state
+                .thread_data
+                .read()
+                .is_ok_and(|data| data.error.is_none())
+        {
             self.next_screen(ui);
         } else {
             ui.spinner();

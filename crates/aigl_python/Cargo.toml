@@ -22,3 +22,4 @@ uv-requirements = { workspace = true }
 uv-resolver = { workspace = true }
 uv-settings = { workspace = true }
 uv-virtualenv = { workspace = true }
+uv-workspace = { workspace = true }
