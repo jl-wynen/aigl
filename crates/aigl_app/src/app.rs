@@ -109,7 +109,13 @@ impl GameInstallApp {
         }
     }
 
-    fn exit(&self, ui: &mut egui::Ui) {
+    fn exit(&mut self, ui: &mut egui::Ui) {
+        if matches!(self.screen, Screen::Installing) {
+            if let Some(thread) = self.install_state.thread.take() {
+                let _ = thread.join();
+            }
+            let _ = std::fs::remove_dir_all(&self.select_location_state.install_location);
+        }
         ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close);
     }
 
