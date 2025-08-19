@@ -36,6 +36,7 @@ impl<'de> Deserialize<'de> for Color {
     }
 }
 
+#[cfg(feature = "load-theme")]
 struct ColorVisitor;
 
 #[cfg(feature = "load-theme")]

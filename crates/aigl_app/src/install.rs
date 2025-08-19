@@ -1,6 +1,6 @@
 use anyhow::Result;
 use std::path::PathBuf;
-use std::sync::{Arc, RwLock};
+use std::sync::{Arc, Mutex, RwLock};
 use std::time::Instant;
 
 use aigl_project::{BotArg, Project, config::game::GameConfig};
@@ -48,16 +48,15 @@ async fn async_install(
     player_bot_id: String,
     player_bot_name: String,
     player_bot_args: Vec<BotArg>,
-) -> Result<()> {
-    let project = Project::init(
+) -> Result<Arc<Mutex<Project>>> {
+    Project::init(
         target_path,
         config,
         player_bot_id,
         player_bot_name,
         player_bot_args,
     )
-    .await?;
-    Ok(())
+    .await
 }
 
 fn start_tokio_runtime(data: &Data) -> Option<tokio::runtime::Runtime> {
