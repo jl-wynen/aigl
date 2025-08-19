@@ -5,4 +5,5 @@ pub mod config;
 mod project;
 mod unique_selection;
 
+pub use bot::{BotArg, BotArgValue};
 pub use project::Project;

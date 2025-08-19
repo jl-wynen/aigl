@@ -1,7 +1,7 @@
 use eframe::egui::{self, InnerResponse, Response};
 
 use crate::components;
-use aigl_project::config::project::{BotArg, BotArgValue};
+use aigl_project::{BotArg, BotArgValue};
 
 pub fn text_input(ui: &mut egui::Ui, label: &str, text: &mut String) -> InnerResponse<Response> {
     ui.horizontal(|ui| {
@@ -10,10 +10,10 @@ pub fn text_input(ui: &mut egui::Ui, label: &str, text: &mut String) -> InnerRes
     })
 }
 
-pub fn color_input(ui: &mut egui::Ui, label: &str, color: &mut [u8; 4]) -> InnerResponse<Response> {
+pub fn color_input(ui: &mut egui::Ui, label: &str, color: &mut [u8; 3]) -> InnerResponse<Response> {
     ui.horizontal(|ui| {
         let label_response = ui.label(label);
-        ui.color_edit_button_srgba_unmultiplied(color)
+        ui.color_edit_button_srgb(color)
             .labelled_by(label_response.id)
     })
 }

@@ -76,7 +76,7 @@ impl Repository {
     }
 
     /// Get parent commits for making a new commit based on current HEAD.
-    fn parents_from_head(&self) -> Result<Vec<git2::Commit>> {
+    fn parents_from_head(&self) -> Result<Vec<git2::Commit<'_>>> {
         Ok(match self.repo.head() {
             Ok(head) => vec![self.repo.find_commit(head.target().unwrap())?],
             Err(_) => vec![],

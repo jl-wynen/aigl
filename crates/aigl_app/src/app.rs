@@ -2,7 +2,7 @@ use eframe::egui::{self};
 
 use crate::components;
 use crate::game_config::fetch_game_config;
-use aigl_project::config::{game::GameConfig, project::BotArg};
+use aigl_project::{BotArg, config::game::GameConfig};
 
 pub struct GameInstallApp {
     screen: Screen,
@@ -32,8 +32,10 @@ struct SelectGameState {
 
 #[derive(Debug, Default)]
 struct ConfigurePlayerState {
+    id: String,
     name: String,
     args: Vec<BotArg>,
+    custom_id: bool,
 }
 
 #[derive(Debug, Default)]
@@ -131,7 +133,7 @@ impl GameInstallApp {
                             .bot
                             .template_args
                             .values()
-                            .map(|arg| BotArg::from_template_arg(arg.clone()))
+                            .map(|arg| BotArg::default_from_template_arg(arg.clone()))
                             .collect();
                         self.game_config = Some(config);
                         state.error = None;
@@ -155,7 +157,18 @@ impl GameInstallApp {
     fn show_configure_player_central_panel(&mut self, ui: &mut egui::Ui) {
         let state = &mut self.configure_player_state;
 
-        components::text_input(ui, "Name", &mut state.name);
+        ui.label("Give your bot a unique name:");
+        let name_response = components::text_input(ui, "Name", &mut state.name);
+        if name_response.inner.changed() && !state.custom_id {
+            state.id = default_bot_id(&state.name);
+        }
+
+        ui.label("Name your Python package (optional):");
+        let id_response = components::text_input(ui, "Package", &mut state.id);
+        if id_response.inner.changed() {
+            state.custom_id = true;
+        }
+
         for arg in state.args.iter_mut() {
             components::bot_arg_input(ui, arg);
         }
@@ -175,11 +188,11 @@ impl GameInstallApp {
         });
     }
 
-    fn show_overview_central_panel(&mut self, ui: &mut egui::Ui) {}
+    fn show_overview_central_panel(&mut self, _ui: &mut egui::Ui) {}
 
-    fn show_installing_central_panel(&mut self, ui: &mut egui::Ui) {}
+    fn show_installing_central_panel(&mut self, _ui: &mut egui::Ui) {}
 
-    fn show_finished_central_panel(&mut self, ui: &mut egui::Ui) {}
+    fn show_finished_central_panel(&mut self, _ui: &mut egui::Ui) {}
 
     fn show_top_panel(&mut self, ui: &mut egui::Ui) {
         let heading = match self.screen {
@@ -222,7 +235,9 @@ impl GameInstallApp {
     fn next_button_spec(&self) -> components::NavNext {
         match self.screen {
             Screen::SelectGame => components::NavNext::Next(self.game_config.is_some()),
-            Screen::ConfigurePlayer => components::NavNext::Next(true),
+            Screen::ConfigurePlayer => {
+                components::NavNext::Next(!self.configure_player_state.name.is_empty())
+            }
             Screen::SelectLocation => {
                 components::NavNext::Next(!self.select_location_state.install_location.is_empty())
             }
@@ -240,4 +255,8 @@ impl eframe::App for GameInstallApp {
         egui::TopBottomPanel::bottom("nav_buttons").show(ctx, |ui| self.show_bottom_panel(ui));
         egui::CentralPanel::default().show(ctx, |ui| self.show_central_panel(ui));
     }
+}
+
+fn default_bot_id(name: &str) -> String {
+    format!("bot_{}", name.to_lowercase())
 }

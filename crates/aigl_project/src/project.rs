@@ -3,7 +3,7 @@ use std::collections::{BTreeMap, HashMap};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
-use crate::bot::{Bot, BotRenderArgs};
+use crate::bot::{Bot, BotArg, BotArgValue};
 use crate::config;
 use crate::unique_selection::UniqueRandomSelection;
 use aigl_git::Repository;
@@ -21,7 +21,9 @@ impl Project {
     pub async fn init(
         path: PathBuf,
         game_config: config::game::GameConfig,
-        player_bot_args: Vec<config::project::BotArg>,
+        player_bot_id: String,
+        player_bot_name: String,
+        player_bot_args: Vec<BotArg>,
     ) -> Result<Arc<Mutex<Self>>> {
         create_output_directory(&path).await?;
         let launcher_dir = init_launcher_dir(&path).await?;
@@ -34,7 +36,6 @@ impl Project {
                 game_config,
                 game_path: PathBuf::new(),
                 bot_paths: Vec::new(),
-                bot_args: vec![player_bot_args],
                 bot_template_path: PathBuf::new(),
                 venv_paths: HashMap::new(),
             },
@@ -42,7 +43,13 @@ impl Project {
             color_gen: crate::bot_colors::bot_color_selection(std::iter::empty::<String>()),
         }));
 
-        set_up_repos(project.clone()).await?;
+        set_up_repos(
+            project.clone(),
+            player_bot_id,
+            player_bot_name,
+            player_bot_args,
+        )
+        .await?;
         create_venvs(project.clone()).await?;
 
         {
@@ -175,6 +182,9 @@ fn clone_bot_template_repo(project: Arc<Mutex<Project>>) -> Result<()> {
 fn set_up_initial_bots(
     join_set: &mut tokio::task::JoinSet<Result<()>>,
     project: Arc<Mutex<Project>>,
+    player_bot_id: String,
+    player_bot_name: String,
+    player_bot_args: Vec<BotArg>,
 ) {
     join_set.spawn(async move {
         let clone_project = project.clone();
@@ -198,19 +208,16 @@ fn set_up_initial_bots(
         tasks.spawn(async move {
             render_player_bot(
                 project_clone,
-                "bot", // TODO use user input
-                &HashMap::from([
-                    ("name".into(), "Testo".into()), // TODO use user input
-                    ("color".into(), "#ff0000".into()),
-                ]),
+                player_bot_id,
+                player_bot_name,
+                player_bot_args,
             )
             .await
         });
         for i in 1..n_bots {
             let project_clone = project.clone();
-            tasks.spawn(async move {
-                render_template_bot(project_clone, &format!("bot_{i}"), HashMap::new()).await
-            });
+            tasks
+                .spawn(async move { render_template_bot(project_clone, format!("bot_{i}")).await });
         }
         tasks.join_all().await;
         Ok(())
@@ -219,37 +226,59 @@ fn set_up_initial_bots(
 
 async fn render_player_bot(
     project: Arc<Mutex<Project>>,
-    bot_name: &str,
-    args: &BotRenderArgs,
+    bot_id: String,
+    bot_name: String,
+    args: Vec<BotArg>,
 ) -> Result<Bot> {
     let target = {
         let lock = project.lock().expect("Failed to get project lock");
-        lock.root.join(bot_name)
+        lock.root.join(&bot_id)
     };
-    Bot::render_template(project.clone(), &target, args).await
+    Bot::render_template(project.clone(), &target, bot_id, bot_name, args).await
 }
 
-async fn render_template_bot(
-    project: Arc<Mutex<Project>>,
-    bot_name: &str,
-    mut args: BotRenderArgs,
-) -> Result<Bot> {
-    let (target, name, color) = {
+async fn render_template_bot(project: Arc<Mutex<Project>>, bot_id: String) -> Result<Bot> {
+    let (target, bot_name, args) = {
         let mut lock = project.lock().expect("Failed to get project lock");
-        (
-            lock.root.join(bot_name),
-            lock.name_gen.pop(),
-            lock.color_gen.pop(),
-        )
+        let mut args = Vec::new();
+        for arg_spec in lock.cfg.game_config.bot.template_args.clone().values() {
+            let arg_value = match &arg_spec.ty {
+                config::game::BotTemplateArgType::Color => {
+                    BotArgValue::color_from_string(&lock.color_gen.pop())
+                }
+                config::game::BotTemplateArgType::String => {
+                    return Err(anyhow::anyhow!("String args are not supported yet"));
+                }
+                config::game::BotTemplateArgType::Path => {
+                    return Err(anyhow::anyhow!("Path args are not supported yet"));
+                }
+            };
+            args.push(BotArg {
+                var: arg_spec.var.clone(),
+                display: arg_spec.display.clone(),
+                value: arg_value,
+            });
+        }
+        (lock.root.join(&bot_id), lock.name_gen.pop(), args)
     };
-    args.insert("name".to_string(), name);
-    args.insert("color".to_string(), color);
-    Bot::render_template(project.clone(), &target, &args).await
+
+    Bot::render_template(project.clone(), &target, bot_id, bot_name, args).await
 }
 
-async fn set_up_repos(project: Arc<Mutex<Project>>) -> Result<()> {
+async fn set_up_repos(
+    project: Arc<Mutex<Project>>,
+    player_bot_id: String,
+    player_bot_name: String,
+    player_bot_args: Vec<BotArg>,
+) -> Result<()> {
     let mut tasks = tokio::task::JoinSet::new();
-    set_up_initial_bots(&mut tasks, project.clone());
+    set_up_initial_bots(
+        &mut tasks,
+        project.clone(),
+        player_bot_id,
+        player_bot_name,
+        player_bot_args,
+    );
     clone_game_repo(&mut tasks, project.clone());
     match tasks
         .join_all()
