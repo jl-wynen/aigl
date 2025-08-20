@@ -28,9 +28,9 @@ fn assert_repo_is_clean(path: &Path) {
     assert!(status.status.success());
     let stdout = String::from_utf8(status.stdout).unwrap();
     panic!("{}", &stdout);
-    assert!(stdout.contains("main"));
-    assert!(stdout.contains("nothing to commit"));
-    assert!(stdout.contains("working tree clean"));
+    // assert!(stdout.contains("main"));
+    // assert!(stdout.contains("nothing to commit"));
+    // assert!(stdout.contains("working tree clean"));
 }
 
 fn assert_git_history(path: &Path, expected_messages: &[&str]) {
