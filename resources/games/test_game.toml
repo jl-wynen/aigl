@@ -17,7 +17,7 @@ template_url = "https://github.com/jl-wynen/aigl_test_bot.git"
 #name = { type = "string", var = "BOT_NAME" }
 [bot.template_args]
 # 'colour' or 'color' gets special handling in launcher
-color = { type = "color", display = "Color", var = "BOT_COLOR" }
+color = { type = "color", display = "Color", var = "color" }
 
 [players]
 mode = "free-for-all"
