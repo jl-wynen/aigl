@@ -309,6 +309,12 @@ impl GameInstallApp {
         let player_bot_id = self.configure_player_state.id.clone();
         let player_bot_name = self.configure_player_state.name.clone();
         let player_bot_args = self.configure_player_state.args.clone();
+
+        // Safety: This is single threaded code.
+        unsafe {
+            aigl_project::config::init_environment(&target_path);
+        }
+
         self.install_state.thread = Some(std::thread::spawn(move || {
             let _ = install(
                 data,
