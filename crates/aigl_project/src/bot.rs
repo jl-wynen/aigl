@@ -101,6 +101,8 @@ impl Bot {
         name: &str,
         args: &[BotArg],
     ) -> anyhow::Result<()> {
+        self.move_package_src(id)?;
+
         let config_path = self.config_file_path()?;
         let mut config = tokio::fs::read_to_string(&config_path)
             .await?
@@ -117,6 +119,7 @@ impl Bot {
             .await?
             .parse::<toml_edit::DocumentMut>()?;
         pyproject["project"]["name"] = toml_edit::value(id);
+        pyproject["tool"]["ruff"]["lint"]["isort"]["known-first-party"] = toml_edit::value(id);
         tokio::fs::write(&pyproject_path, pyproject.to_string()).await?;
 
         Ok(())
@@ -140,6 +143,13 @@ impl Bot {
 
     fn pyproject_file_path(&self) -> PathBuf {
         self.root.join("pyproject.toml")
+    }
+
+    fn move_package_src(&self, new_name: &str) -> anyhow::Result<()> {
+        let old = self.package_src_path()?;
+        let new = old.with_file_name(new_name);
+        std::fs::rename(old, new)?;
+        Ok(())
     }
 }
 
