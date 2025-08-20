@@ -125,6 +125,10 @@ impl Bot {
         Ok(())
     }
 
+    pub(crate) fn root(&self) -> &Path {
+        &self.root
+    }
+
     fn package_src_path(&self) -> anyhow::Result<PathBuf> {
         let src_path = self.root.join("src");
         let mut entries = std::fs::read_dir(src_path)?;

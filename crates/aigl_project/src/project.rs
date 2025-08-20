@@ -227,7 +227,11 @@ async fn render_player_bot(
         let lock = project.lock().await;
         lock.root.join(&bot_id)
     };
-    Bot::render_template(project.clone(), &target, bot_id, bot_name, args).await
+    let bot = Bot::render_template(project.clone(), &target, bot_id, bot_name, args).await?;
+    tokio::fs::remove_dir_all(bot.root().join(".git")).await?;
+    let repo = Repository::init(bot.root())?;
+    repo.commit_all("Init")?;
+    Ok(bot)
 }
 
 async fn render_template_bot(project: Arc<Mutex<Project>>, bot_id: String) -> Result<Bot> {
