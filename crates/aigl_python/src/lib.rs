@@ -1,6 +1,5 @@
 mod cache;
 mod install;
-mod run;
 mod settings;
 mod venv;
 
