@@ -12,6 +12,7 @@ license = "MIT"
 
 [workspace.dependencies]
 anyhow = "1.0"
+async-lock = "3.4"
 cachedir = "0.3"
 eframe = { version = "0.32", features = ["default"] }
 egui-phosphor = "0.10"

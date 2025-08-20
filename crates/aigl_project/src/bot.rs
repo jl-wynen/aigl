@@ -1,6 +1,7 @@
+use async_lock::Mutex;
 use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 
 use crate::Project;
 use crate::config::game::{BotTemplateArg, BotTemplateArgType};
@@ -87,7 +88,7 @@ impl Bot {
         bot.apply_args(&bot.id, &bot.name, &bot.args).await?;
         project
             .lock()
-            .expect("Failed to get project lock")
+            .await
             .cfg_mut()
             .bot_paths
             .push(target.to_path_buf());
@@ -144,7 +145,7 @@ impl Bot {
 
 async fn copy_bot_template(project: Arc<Mutex<Project>>, target: &Path) -> anyhow::Result<()> {
     let src = {
-        let project = project.lock().expect("Failed to get project lock");
+        let project = project.lock().await;
         project.cfg().bot_template_path.clone()
     };
     copy_dir_recursive(&src, target).await

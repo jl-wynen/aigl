@@ -14,6 +14,7 @@ aigl_python = { path = "../aigl_python" }
 aigl_system = { path = "../aigl_system" }
 
 anyhow = { workspace = true }
+async-lock = { workspace = true }
 cachedir = { workspace = true }
 rand = { workspace = true }
 tokio = { workspace = true }

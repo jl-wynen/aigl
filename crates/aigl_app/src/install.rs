@@ -1,6 +1,7 @@
 use anyhow::Result;
+use async_lock::Mutex;
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex, RwLock};
+use std::sync::{Arc, RwLock};
 
 use aigl_project::{BotArg, Project, config::game::GameConfig};
 

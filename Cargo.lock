@@ -164,6 +164,7 @@ version = "0.1.0"
 dependencies = [
  "aigl_project",
  "anyhow",
+ "async-lock",
  "eframe",
  "egui-phosphor",
  "lazy_static",
@@ -194,6 +195,7 @@ dependencies = [
  "aigl_python",
  "aigl_system",
  "anyhow",
+ "async-lock",
  "cachedir",
  "pretty_assertions",
  "rand 0.9.2",

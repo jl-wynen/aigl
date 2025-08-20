@@ -1,7 +1,8 @@
 use anyhow::{Result, bail};
+use async_lock::Mutex;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 
 use crate::bot::{Bot, BotArg, BotArgValue};
 use crate::config;
@@ -53,10 +54,10 @@ impl Project {
         create_venvs(project.clone()).await?;
 
         {
-            let project = project.lock().expect("Failed to get project lock");
+            let project = project.lock().await;
             project.save_config().await?;
-            untag_dir_as_incomplete(&launcher_dir).await?;
         }
+        untag_dir_as_incomplete(&launcher_dir).await?;
         Ok(project)
     }
 
@@ -155,23 +156,21 @@ fn open_python_cache(launcher_dir: &Path) -> Result<aigl_python::Cache> {
     aigl_python::Cache::discover(&config::uv_cache_dir(launcher_dir))
 }
 
-fn clone_game_repo(join_set: &mut tokio::task::JoinSet<Result<()>>, project: Arc<Mutex<Project>>) {
-    join_set.spawn_blocking(move || {
-        let mut project = project.lock().expect("Failed to get project lock");
-        let url = project.cfg.game_config.game.url.to_owned();
-        let target = project.root.join(&project.cfg.game_config.name);
-        match Repository::clone(&url, &target, false) {
-            Ok(_) => {
-                project.cfg.game_path = target.clone();
-                Ok(())
-            }
-            Err(err) => Err(err),
+async fn clone_game_repo(project: Arc<Mutex<Project>>) -> Result<()> {
+    let mut project = project.lock().await;
+    let url = project.cfg.game_config.game.url.to_owned();
+    let target = project.root.join(&project.cfg.game_config.name);
+    match Repository::clone(&url, &target, false) {
+        Ok(_) => {
+            project.cfg.game_path = target.clone();
+            Ok(())
         }
-    });
+        Err(err) => Err(err),
+    }
 }
 
-fn clone_bot_template_repo(project: Arc<Mutex<Project>>) -> Result<()> {
-    let mut project = project.lock().expect("Failed to get project lock");
+async fn clone_bot_template_repo(project: Arc<Mutex<Project>>) -> Result<()> {
+    let mut project = project.lock().await;
     let url = project.cfg.game_config.bot.template_url.to_owned();
     let target = config::bot_templates_dir(&project.root).join("template");
     match Repository::clone(&url, &target, true) {
@@ -183,49 +182,39 @@ fn clone_bot_template_repo(project: Arc<Mutex<Project>>) -> Result<()> {
     }
 }
 
-fn set_up_initial_bots(
-    join_set: &mut tokio::task::JoinSet<Result<()>>,
+async fn set_up_initial_bots(
     project: Arc<Mutex<Project>>,
     player_bot_id: String,
     player_bot_name: String,
     player_bot_args: Vec<BotArg>,
-) {
-    join_set.spawn(async move {
-        let clone_project = project.clone();
-        tokio::task::spawn_blocking(move || clone_bot_template_repo(clone_project)).await??;
+) -> Result<()> {
+    let clone_project = project.clone();
+    clone_bot_template_repo(clone_project).await?;
 
-        let n_bots = match project
-            .lock()
-            .expect("Failed to get project lock")
-            .cfg
-            .game_config
-            .players
-        {
-            config::game::Players::FFA { n_min, .. } => n_min,
-            config::game::Players::Teams { .. } => {
-                todo!("Support for teams is not implemented")
-            }
-        };
-
-        let mut tasks = tokio::task::JoinSet::<Result<Bot>>::new();
-        let project_clone = project.clone();
-        tasks.spawn(async move {
-            render_player_bot(
-                project_clone,
-                player_bot_id,
-                player_bot_name,
-                player_bot_args,
-            )
-            .await
-        });
-        for i in 1..n_bots {
-            let project_clone = project.clone();
-            tasks
-                .spawn(async move { render_template_bot(project_clone, format!("bot_{i}")).await });
+    let n_bots = match project.lock().await.cfg.game_config.players {
+        config::game::Players::FFA { n_min, .. } => n_min,
+        config::game::Players::Teams { .. } => {
+            todo!("Support for teams is not implemented")
         }
-        tasks.join_all().await;
-        Ok(())
+    };
+
+    let mut tasks = tokio::task::JoinSet::<Result<Bot>>::new();
+    let project_clone = project.clone();
+    tasks.spawn(async move {
+        render_player_bot(
+            project_clone,
+            player_bot_id,
+            player_bot_name,
+            player_bot_args,
+        )
+        .await
     });
+    for i in 1..n_bots {
+        let project_clone = project.clone();
+        tasks.spawn(async move { render_template_bot(project_clone, format!("bot_{i}")).await });
+    }
+    tasks.join_all().await;
+    Ok(())
 }
 
 async fn render_player_bot(
@@ -235,7 +224,7 @@ async fn render_player_bot(
     args: Vec<BotArg>,
 ) -> Result<Bot> {
     let target = {
-        let lock = project.lock().expect("Failed to get project lock");
+        let lock = project.lock().await;
         lock.root.join(&bot_id)
     };
     Bot::render_template(project.clone(), &target, bot_id, bot_name, args).await
@@ -243,7 +232,7 @@ async fn render_player_bot(
 
 async fn render_template_bot(project: Arc<Mutex<Project>>, bot_id: String) -> Result<Bot> {
     let (target, bot_name, args) = {
-        let mut lock = project.lock().expect("Failed to get project lock");
+        let mut lock = project.lock().await;
         let mut args = Vec::new();
         for arg_spec in lock.cfg.game_config.bot.template_args.clone().values() {
             let arg_value = match &arg_spec.ty {
@@ -275,28 +264,19 @@ async fn set_up_repos(
     player_bot_name: String,
     player_bot_args: Vec<BotArg>,
 ) -> Result<()> {
-    let mut tasks = tokio::task::JoinSet::new();
     set_up_initial_bots(
-        &mut tasks,
         project.clone(),
         player_bot_id,
         player_bot_name,
         player_bot_args,
-    );
-    clone_game_repo(&mut tasks, project.clone());
-    match tasks
-        .join_all()
-        .await
-        .into_iter()
-        .find_map(|result| result.err())
-    {
-        None => Ok(()),
-        Some(err) => Err(err),
-    }
+    )
+    .await?;
+    clone_game_repo(project.clone()).await?;
+    Ok(())
 }
 
 async fn create_venvs(project: Arc<Mutex<Project>>) -> Result<()> {
-    let mut lock = project.lock().expect("Failed to get project lock");
+    let mut lock = project.lock().await;
     let python_config = &lock.cfg.game_config.python;
     if matches!(python_config.venv, config::game::VenvKind::PerBot) {
         bail!("Per-bot virtual environments are not supported yet");
