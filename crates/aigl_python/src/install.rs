@@ -16,7 +16,7 @@ use uv_distribution_types::{
 };
 use uv_install_wheel::LinkMode;
 use uv_normalize::{GroupName, PipGroupName};
-use uv_python::{PythonPreference, Target};
+use uv_python::PythonPreference;
 use uv_requirements::GroupsSpecification;
 use uv_resolver::{
     DependencyMode, ExcludeNewer, ExcludeNewerPackage, PrereleaseMode, ResolutionMode,
