@@ -1,0 +1,98 @@
+:root {
+    --red-1: #f4f2f1;
+    --red-2: #f3ecec;
+    --red-3: #f0dfde;
+    --red-4: #f2d1d0;
+    --red-5: #edc4c2;
+    --red-6: #e5b4b2;
+    --red-7: #dba19f;
+    --red-8: #d08987;
+    --red-9: #a51d2d;
+    --red-10: #93001e;
+    --red-11: #b12b36;
+    --red-12: #601f22;
+
+    --gray-1: #f1f1f2;
+    --gray-2: #edeef0;
+    --gray-3: #e3e4e7;
+    --gray-4: #dadbe0;
+    --gray-5: #d2d3d9;
+    --gray-6: #cacbd2;
+    --gray-7: #bec0c8;
+    --gray-8: #aaacb7;
+    --gray-9: #7d7f89;
+    --gray-10: #72747e;
+    --gray-11: #55575f;
+    --gray-12: #1e1f24;
+}
+
+body {
+    background: var(--red-1);
+    color: var(--gray-12);
+    font-family: sans-serif;
+}
+
+h1 {
+    text-align: center;
+    color: var(--red-11);
+}
+
+.download-container {
+    background: var(--gray-3);
+    border: 1px solid var(--gray-8);
+    margin: 1rem;
+}
+
+[data-tab-info] {
+    display: none;
+}
+
+.active[data-tab-info] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0.5rem;
+}
+
+.tab-content {
+    margin-top: 1rem;
+    padding-left: 1rem;
+    font-size: 20px;
+}
+
+.tabs {
+    border-bottom: 1px solid grey;
+    background: var(--gray-3);
+    font-size: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tabs span {
+    background: var(--gray-4);
+    border: 1px solid rgb(255, 255, 255);
+    cursor: pointer;
+    padding: 0.5rem 2rem 0.5rem 2rem;
+}
+
+.tabs span.active {
+    background: var(--red-4);
+}
+
+.tabs span:hover {
+    background: var(--red-6);
+}
+
+.download-button {
+    background: var(--red-4);
+    border: 1px solid var(--red-8);
+    color: var(--red-11);
+    padding: 0.5rem;
+}
+
+.download-button:hover {
+    background: var(--red-5);
+    border: 1px solid var(--red-9);
+    color: var(--red-10);
+}

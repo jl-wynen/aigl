@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AI Game Launcher</title>
+    <meta charset="UTF-8">
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1>AI Game Launcher</h1>
+
+<div class="download-container">
+    <div class="tabs">
+        <span class="active" data-tab-value="#tab_linux">Linux</span>
+        <span data-tab-value="#tab_macos">macOS</span>
+        <span data-tab-value="#tab_windows">Windows</span>
+    </div>
+    <div class="tab-content">
+        <div class="tabs__tab active" id="tab_linux" data-tab-info>
+            <a class="download-button"
+               href="https://github.com/jl-wynen/aigl/releases/latest/download/aigl-x86_64-unknown-linux-gnu.zip">Download</a>
+        </div>
+        <div class="tabs__tab" id="tab_macos" data-tab-info>
+            <a class="download-button"
+               href="https://github.com/jl-wynen/aigl/releases/latest/download/aigl-aarch64-apple-darwin.zip">Download</a>
+        </div>
+        <div class="tabs__tab" id="tab_windows" data-tab-info>
+            <a class="download-button"
+               href="https://github.com/jl-wynen/aigl/releases/latest/download/aigl-x86_64-pc-windows-msvc.zip">Download</a>
+        </div>
+    </div>
+</div>
+
+<script>setUpTabs()</script>
+</body>
+</html>
