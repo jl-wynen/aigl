@@ -27,6 +27,7 @@ fn assert_repo_is_clean(path: &Path) {
         .unwrap();
     assert!(status.status.success());
     let stdout = String::from_utf8(status.stdout).unwrap();
+    panic!("{}", &stdout);
     assert!(stdout.contains("main"));
     assert!(stdout.contains("nothing to commit"));
     assert!(stdout.contains("working tree clean"));
