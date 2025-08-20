@@ -1,0 +1,78 @@
+name: Release
+on:
+  release:
+    types: [ published ]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the release to GitHub
+        default: false
+        type: boolean
+
+env:
+  CARGO_INCREMENTAL: 0
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-24.04
+            archive_name: aigl-x86_64-unknown-linux-gnu.zip
+          - target: aarch64-apple-darwin
+            os: macos-15
+            archive_name: aigl-aarch64-apple-darwin.zip
+          - target: x86_64-pc-windows-msvc
+            os: windows-2025
+            archive_name: aigl-x86_64-pc-windows-msvc.zip
+    steps:
+      - name: Install mold
+        uses: rui314/setup-mold@v1
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1.13.0
+
+      - name: Build
+        run: cargo build --verbose --release --locked --target "${{ matrix.target }}"
+      - name: Prepare artifacts [Windows]
+        if: "contains(matrix.target, 'windows')"
+        run: |
+          cd target/${{ matrix.target }}/release
+          7z a ../../../${{ matrix.archive_name }} aigl.exe
+          cd -
+      - name: Prepare artifacts [-nix]
+        if: "!contains(matrix.target, 'windows')"
+        run: |
+          cd target/${{ matrix.target }}/release
+          zip ../../../${{ matrix.archive_name }} aigl
+          cd -
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.archive_name }}
+          path: ${{ matrix.archive_name }}
+
+  publish:
+    name: Publish to GitHub release
+    needs: [ build ]
+    if: inputs.publish || (github.event_name == 'release' && github.event.action == 'published')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+      - name: Compute checksums
+        run: for file in aigl-*/aigl-*; do sha256sum "$file" > "${file}.sha256"; done
+      - name: Upload binaries to GH release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          file: aigl-*/aigl-*
+          file_glob: true
