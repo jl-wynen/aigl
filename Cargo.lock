@@ -163,6 +163,7 @@ name = "aigl_app"
 version = "0.1.0"
 dependencies = [
  "aigl_project",
+ "aigl_system",
  "anyhow",
  "async-lock",
  "eframe",

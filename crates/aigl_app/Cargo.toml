@@ -10,6 +10,7 @@ license.workspace = true
 
 [dependencies]
 aigl_project = { path = "../aigl_project" }
+aigl_system = { path = "../aigl_system" }
 
 anyhow = { workspace = true }
 async-lock = { workspace = true }

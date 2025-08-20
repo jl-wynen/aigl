@@ -6,6 +6,7 @@ use crate::components;
 use crate::game_config::fetch_game_config;
 use crate::install::{InstallThreadData, install};
 use aigl_project::{BotArg, config::game::GameConfig, dir_is_incomplete};
+use aigl_system::fs::path_available_as_output_directory;
 
 pub struct GameInstallApp {
     screen: Screen,
@@ -44,6 +45,7 @@ struct ConfigurePlayerState {
 #[derive(Debug, Default)]
 struct SelectLocationState {
     install_location: String,
+    error: Option<String>,
 }
 
 #[derive(Debug, Default)]
@@ -202,15 +204,31 @@ impl GameInstallApp {
     fn show_select_location_central_panel(&mut self, ui: &mut egui::Ui) {
         let state = &mut self.select_location_state;
         let path_label = ui.label("Select a folder to install into:");
-        ui.horizontal(|ui| {
-            ui.text_edit_singleline(&mut state.install_location)
+        let response = ui.horizontal(|ui| {
+            let edit_response = ui
+                .text_edit_singleline(&mut state.install_location)
                 .labelled_by(path_label.id);
             if ui.button("Browse").clicked() {
                 if let Some(path) = rfd::FileDialog::new().pick_folder() {
                     state.install_location = path.display().to_string();
                 }
             }
+            edit_response
         });
+
+        if response.inner.changed() {
+            match path_available_as_output_directory(&PathBuf::from(&state.install_location)) {
+                Ok(_) => {
+                    state.error = None;
+                }
+                Err(err) => {
+                    state.error = Some(err.to_string());
+                }
+            }
+        }
+        if let Some(error) = &state.error {
+            ui.colored_label(ui.visuals().error_fg_color, format!("{error}"));
+        }
     }
 
     fn show_overview_central_panel(&mut self, ui: &mut egui::Ui) {
@@ -301,7 +319,10 @@ impl GameInstallApp {
                 components::NavNext::Next(!self.configure_player_state.name.is_empty())
             }
             Screen::SelectLocation => {
-                components::NavNext::Next(!self.select_location_state.install_location.is_empty())
+                let state = &self.select_location_state;
+                components::NavNext::Next(
+                    !state.install_location.is_empty() && state.error.is_none(),
+                )
             }
             Screen::Overview => components::NavNext::Install(true),
             Screen::Installing => components::NavNext::Install(false),

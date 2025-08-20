@@ -3,29 +3,31 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 pub async fn create_output_directory(path: &Path) -> anyhow::Result<()> {
+    path_available_as_output_directory(path)?;
+    tokio::fs::create_dir_all(path)
+        .await
+        .context("When creating output directory")
+}
+
+pub fn path_available_as_output_directory(path: &Path) -> anyhow::Result<()> {
     if path.exists() {
         if !path.is_dir() {
             bail!(
                 "Output path exists and is not a directory: {}",
                 path.display()
             );
-        } else if !directory_is_empty(path).await {
+        } else if !directory_is_empty(path) {
             bail!("Output directory is not empty: {}", path.display());
         }
     }
-    tokio::fs::create_dir_all(path)
-        .await
-        .context("When creating output directory")
+    Ok(())
 }
 
-pub async fn directory_is_empty(path: &Path) -> bool {
-    let Ok(mut children) = tokio::fs::read_dir(path).await else {
+pub fn directory_is_empty(path: &Path) -> bool {
+    let Ok(mut children) = fs::read_dir(path) else {
         return false;
     };
-    children
-        .next_entry()
-        .await
-        .is_ok_and(|entry| entry.is_none())
+    children.next().is_none()
 }
 
 pub async fn copy_dir_recursive(
