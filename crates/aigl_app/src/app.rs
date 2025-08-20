@@ -104,12 +104,20 @@ impl GameInstallApp {
             Screen::ConfigurePlayer => self.screen = Screen::SelectGame,
             Screen::SelectLocation => self.screen = Screen::ConfigurePlayer,
             Screen::Overview => self.screen = Screen::SelectLocation,
-            Screen::Installing => self.exit(ui),
+            Screen::Installing => {
+                self.cancel_installation();
+                self.screen = Screen::Overview;
+            }
             Screen::Finished => self.exit(ui),
         }
     }
 
     fn exit(&mut self, ui: &mut egui::Ui) {
+        self.cancel_installation();
+        ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close);
+    }
+
+    fn cancel_installation(&mut self) {
         if matches!(self.screen, Screen::Installing) {
             if let Some(thread) = self.install_state.thread.take() {
                 let _ = thread.join();
@@ -119,7 +127,6 @@ impl GameInstallApp {
                 let _ = std::fs::remove_dir_all(path);
             }
         }
-        ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close);
     }
 
     fn show_central_panel(&mut self, ui: &mut egui::Ui) {
@@ -268,7 +275,7 @@ impl GameInstallApp {
             _ => components::NavExit::Exit,
         };
         let back_button_spec = match self.screen {
-            Screen::Finished | Screen::Installing | Screen::SelectGame => components::NavBack::No,
+            Screen::Finished | Screen::SelectGame => components::NavBack::No,
             _ => components::NavBack::Back,
         };
 
