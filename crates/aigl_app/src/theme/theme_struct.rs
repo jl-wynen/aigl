@@ -145,8 +145,7 @@ impl Theme {
 
     #[cfg(not(feature = "load-theme"))]
     pub const fn get_selected() -> &'static Self {
-        let x = &super::radix::RADIX_THEME;
-        x
+        &super::radix::RADIX_THEME
     }
 
     pub fn apply(&self, ctx: &egui::Context) {
