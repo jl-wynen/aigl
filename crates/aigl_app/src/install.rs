@@ -1,7 +1,6 @@
 use anyhow::Result;
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex, RwLock};
-use std::time::Instant;
 
 use aigl_project::{BotArg, Project, config::game::GameConfig};
 
@@ -73,11 +72,9 @@ fn start_tokio_runtime(data: &Data) -> Option<tokio::runtime::Runtime> {
 }
 
 fn show_error(data: &Data, error: String) {
-    let start = Instant::now();
-    while start.elapsed() < std::time::Duration::from_secs(1) {
-        if let Ok(mut data) = data.write() {
-            data.error = Some(error);
-            break;
-        }
+    if let Ok(mut data) = data.write() {
+        data.error = Some(error);
+    } else {
+        eprintln!("Failed to write to error data: {error}");
     }
 }
