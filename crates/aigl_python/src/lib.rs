@@ -1,8 +1,8 @@
 mod cache;
 mod install;
+mod run;
 mod settings;
 mod venv;
-mod run;
 
 pub use cache::Cache;
 pub use install::{RequirementsSource, install};
