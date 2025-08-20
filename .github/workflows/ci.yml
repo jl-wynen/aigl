@@ -11,6 +11,19 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+
+  website:
+    name: Publish the website
+
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: JamesIves/github-pages-deploy-action@v4
+        id: deployment
+        with:
+          folder: website
+
   format:
     name: Formatting
     runs-on: ubuntu-24.04
