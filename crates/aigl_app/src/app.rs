@@ -227,7 +227,7 @@ impl GameInstallApp {
             }
         }
         if let Some(error) = &state.error {
-            ui.colored_label(ui.visuals().error_fg_color, format!("{error}"));
+            ui.colored_label(ui.visuals().error_fg_color, error);
         }
     }
 
