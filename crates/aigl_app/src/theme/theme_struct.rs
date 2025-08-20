@@ -12,6 +12,7 @@ use anyhow::Result;
     derive(serde::Deserialize),
     serde(rename = "Theme")
 )]
+#[allow(dead_code)]
 #[derive(Debug)]
 pub struct ThemeConfig {
     pub dark_mode: bool,
@@ -25,6 +26,7 @@ pub struct ThemeConfig {
     pub corner_radius: u8,
 }
 
+#[allow(dead_code)]
 #[derive(Clone, Debug)]
 pub struct Theme {
     pub dark_mode: bool,
@@ -44,6 +46,7 @@ pub struct Theme {
 }
 
 #[cfg_attr(feature = "load-theme", derive(serde::Deserialize))]
+#[allow(dead_code)]
 #[derive(Clone, Debug)]
 pub struct Scale {
     pub bg: Color,

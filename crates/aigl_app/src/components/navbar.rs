@@ -66,6 +66,7 @@ pub enum NavBack {
     No,
 }
 
+#[allow(dead_code)]
 #[derive(Clone, Debug)]
 pub struct NavResponse {
     clicked: NavClicked,
