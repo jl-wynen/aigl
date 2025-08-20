@@ -22,7 +22,10 @@ pub async fn directory_is_empty(path: &Path) -> bool {
     let Ok(mut children) = tokio::fs::read_dir(path).await else {
         return false;
     };
-    children.next_entry().await.is_err()
+    children
+        .next_entry()
+        .await
+        .is_ok_and(|entry| entry.is_none())
 }
 
 pub async fn copy_dir_recursive(
