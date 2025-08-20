@@ -98,12 +98,10 @@ pub async fn install(
         true,
         ExcludeNewer::new(None, ExcludeNewerPackage::default()),
         SourceStrategy::Disabled, // Prevent overriding sources.
+        Some(environment.python_executable().display().to_string()),
+        false,
+        false,
         None,
-        false,
-        false,
-        Some(Target::from(
-            environment.python_environment().root().to_owned(),
-        )),
         None,
         PythonPreference::OnlyManaged,
         Concurrency::default(),

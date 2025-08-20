@@ -65,13 +65,15 @@ impl VirtualEnvironment {
         Ok(Self { python_environment })
     }
 
-    pub fn prepare_python_command(&self) -> Command {
-        let exe_path = self
-            .python_environment()
+    pub fn python_executable(&self) -> PathBuf {
+        self.python_environment()
             .into_interpreter()
             .real_executable()
-            .to_owned();
-        Command::new(exe_path)
+            .to_owned()
+    }
+
+    pub fn prepare_python_command(&self) -> Command {
+        Command::new(self.python_executable())
     }
 
     pub(crate) fn python_environment(&self) -> PythonEnvironment {
