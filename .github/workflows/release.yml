@@ -80,7 +80,7 @@ jobs:
   website:
     name: Publish the website
     needs: [ build ]
-    if: inputs.publish || (github.event_name == 'release' && github.event.action == 'published')
+
     runs-on: ubuntu-24.04
     permissions:
       contents: write
