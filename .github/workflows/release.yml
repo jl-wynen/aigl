@@ -91,3 +91,4 @@ jobs:
         id: deployment
         with:
           folder: website
+          clean-exclude: resources/*
