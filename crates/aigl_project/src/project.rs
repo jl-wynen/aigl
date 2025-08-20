@@ -293,6 +293,7 @@ async fn create_venvs(project: Arc<Mutex<Project>>) -> Result<()> {
         .cfg()
         .bot_paths
         .iter()
+        .chain(std::iter::once(&lock.cfg().game_path))
         .map(|path| aigl_python::RequirementsSource::Editable(path.display().to_string()))
         .collect();
     let player_bot_path = lock.cfg().bot_paths.first().unwrap();
