@@ -115,8 +115,15 @@ impl GameInstallApp {
     }
 
     fn exit(&mut self, ui: &mut egui::Ui) {
-        self.cancel_installation();
-        ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close);
+        match self.screen {
+            Screen::Installing => {
+                self.cancel_installation();
+                self.previous_screen(ui);
+            }
+            _ => {
+                ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close);
+            }
+        }
     }
 
     fn cancel_installation(&mut self) {
@@ -293,7 +300,7 @@ impl GameInstallApp {
             _ => components::NavExit::Exit,
         };
         let back_button_spec = match self.screen {
-            Screen::Finished | Screen::SelectGame => components::NavBack::No,
+            Screen::Finished | Screen::Installing | Screen::SelectGame => components::NavBack::No,
             _ => components::NavBack::Back,
         };
 
