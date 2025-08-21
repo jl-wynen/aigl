@@ -19,3 +19,4 @@ color = { type = "color", display = "Color", var = "color" }
 [players]
 mode = "free-for-all"
 n_min = 2
+n_initial = 10
