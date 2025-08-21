@@ -198,22 +198,16 @@ async fn set_up_initial_bots(
         }
     };
 
-    let mut tasks = tokio::task::JoinSet::<Result<Bot>>::new();
-    let project_clone = project.clone();
-    tasks.spawn(async move {
-        render_player_bot(
-            project_clone,
-            player_bot_id,
-            player_bot_name,
-            player_bot_args,
-        )
-        .await
-    });
+    render_player_bot(
+        project.clone(),
+        player_bot_id,
+        player_bot_name,
+        player_bot_args,
+    )
+    .await?;
     for i in 1..n_bots {
-        let project_clone = project.clone();
-        tasks.spawn(async move { render_template_bot(project_clone, format!("bot_{i}")).await });
+        render_template_bot(project.clone(), format!("bot_{i}")).await?;
     }
-    tasks.join_all().await;
     Ok(())
 }
 
