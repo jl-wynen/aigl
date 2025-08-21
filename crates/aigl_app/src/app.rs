@@ -1,10 +1,12 @@
-use eframe::egui::{self};
+use eframe::egui;
+use eframe::egui::RichText;
 use std::path::PathBuf;
 use std::sync::{Arc, RwLock};
 
 use crate::components;
 use crate::game_config::fetch_game_config;
 use crate::install::{InstallThreadData, install};
+use crate::theme::Theme;
 use aigl_project::{BotArg, config::game::GameConfig, dir_is_incomplete};
 use aigl_system::fs::path_available_as_output_directory;
 
@@ -183,9 +185,14 @@ impl GameInstallApp {
         if let Some(error) = &state.error {
             ui.colored_label(ui.visuals().error_fg_color, format!("Error: {error}"));
         } else if let Some(game_config) = &self.game_config {
-            ui.label(format!("Game name: {}", game_config.name));
+            components::game_info_text(ui, game_config);
         }
-        ui.add_space(50.0);
+        ui.add_space(100.0);
+        let theme = Theme::get_selected();
+        ui.label(
+            RichText::from("Your game master will provide the game code.")
+                .color(theme.base.fg_low_contrast.0),
+        );
     }
 
     fn show_configure_player_central_panel(&mut self, ui: &mut egui::Ui) {
