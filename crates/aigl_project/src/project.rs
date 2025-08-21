@@ -6,6 +6,7 @@ use std::sync::Arc;
 
 use crate::bot::{Bot, BotArg, BotArgValue};
 use crate::config;
+use crate::config::game::Players;
 use crate::unique_selection::UniqueRandomSelection;
 use aigl_git::Repository;
 use aigl_system::fs::create_output_directory;
@@ -191,13 +192,6 @@ async fn set_up_initial_bots(
     let clone_project = project.clone();
     clone_bot_template_repo(clone_project).await?;
 
-    let n_bots = match project.lock().await.cfg.game_config.players {
-        config::game::Players::FFA { n_min, .. } => n_min,
-        config::game::Players::Teams { .. } => {
-            todo!("Support for teams is not implemented")
-        }
-    };
-
     render_player_bot(
         project.clone(),
         player_bot_id,
@@ -205,9 +199,8 @@ async fn set_up_initial_bots(
         player_bot_args,
     )
     .await?;
-    for i in 1..n_bots {
-        render_template_bot(project.clone(), format!("bot_{i}")).await?;
-    }
+    render_template_bot(project.clone(), "template_bot".into()).await?;
+
     Ok(())
 }
 
@@ -256,6 +249,87 @@ async fn render_template_bot(project: Arc<Mutex<Project>>, bot_id: String) -> Re
     Bot::render_template(project.clone(), &target, bot_id, bot_name, args).await
 }
 
+async fn set_up_game(project: Arc<Mutex<Project>>, player_bot_id: &str) -> Result<()> {
+    clone_game_repo(project.clone()).await?;
+
+    let (base_config, new_config, n_bots) = {
+        let lock = project.lock().await;
+        let base_config = lock
+            .cfg
+            .game_path
+            .join(&lock.cfg.game_config.game.base_config_in_repo);
+        let new_config = lock.root.join(
+            base_config
+                .file_name()
+                .ok_or_else(|| anyhow::anyhow!("No config file name"))?,
+        );
+        let n_bots = match lock.cfg.game_config.players {
+            Players::FFA {
+                n_min, n_initial, ..
+            } => n_initial.unwrap_or(n_min) - 1,
+            Players::Teams { .. } => todo!("Teams are not yet supported"),
+        };
+        (base_config, new_config, n_bots)
+    };
+
+    let mut config = tokio::fs::read_to_string(&base_config)
+        .await?
+        .parse::<toml_edit::DocumentMut>()?;
+    let players = {
+        let mut lock = project.lock().await;
+        let mut players = toml_edit::ArrayOfTables::new();
+
+        players.push(make_player_config_table(
+            &mut lock,
+            player_bot_id,
+            false,
+            Some("\n# --- Select bots for the game ---\n# Your bot:\n"),
+        ));
+
+        for i in 1..n_bots {
+            let comment = if i == 1 {
+                Some(
+                    "\n# Add a number of extra bots:
+# Override the name and color to distinguish them in the game.\n",
+                )
+            } else {
+                None
+            };
+            players.push(make_player_config_table(
+                &mut lock,
+                "template_bot",
+                true,
+                comment,
+            ));
+        }
+        players
+    };
+    config["player"] = players.into();
+    tokio::fs::write(&new_config, config.to_string()).await?;
+
+    Ok(())
+}
+
+fn make_player_config_table(
+    project: &mut Project,
+    bot_id: &str,
+    use_overrides: bool,
+    comment: Option<&str>,
+) -> toml_edit::Table {
+    let mut table = toml_edit::Table::new();
+    table.insert("package", toml_edit::value(bot_id));
+    if use_overrides {
+        let mut overrides = toml_edit::InlineTable::new();
+        overrides.insert("name", project.name_gen.pop().into());
+        overrides.insert("color", project.color_gen.pop().into());
+        table.insert("overrides", overrides.into());
+    }
+    if let Some(comment) = comment {
+        table.decor_mut().set_prefix(comment);
+    }
+    table
+}
+
 async fn set_up_repos(
     project: Arc<Mutex<Project>>,
     player_bot_id: String,
@@ -264,12 +338,12 @@ async fn set_up_repos(
 ) -> Result<()> {
     set_up_initial_bots(
         project.clone(),
-        player_bot_id,
+        player_bot_id.clone(),
         player_bot_name,
         player_bot_args,
     )
     .await?;
-    clone_game_repo(project.clone()).await?;
+    set_up_game(project, &player_bot_id).await?;
     Ok(())
 }
 

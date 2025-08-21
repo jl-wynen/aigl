@@ -126,6 +126,8 @@ pub mod game {
             n_min: usize,
             #[serde(default)]
             n_max: Option<usize>,
+            #[serde(default)]
+            n_initial: Option<usize>,
         },
         #[serde(rename = "teams")]
         Teams {
