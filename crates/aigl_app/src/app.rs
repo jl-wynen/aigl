@@ -137,6 +137,7 @@ impl GameInstallApp {
             if dir_is_incomplete(&path) {
                 let _ = std::fs::remove_dir_all(path);
             }
+            self.install_state.thread_data.write().unwrap().error = None;
         }
     }
 
