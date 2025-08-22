@@ -304,7 +304,7 @@ async fn set_up_game(project: Arc<Mutex<Project>>, player_bot_id: &str) -> Resul
         }
         players
     };
-    config["player"] = players.into();
+    config.insert("player", players.into());
     tokio::fs::write(&new_config, config.to_string()).await?;
 
     Ok(())

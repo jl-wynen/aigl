@@ -248,7 +248,7 @@ impl GameInstallApp {
 
     fn show_overview_central_panel(&mut self, ui: &mut egui::Ui) {
         ui.label(format!(
-            "About to install into {}",
+            "About to install the game into {}",
             self.select_location_state.install_location
         ));
     }
@@ -283,10 +283,28 @@ impl GameInstallApp {
     }
 
     fn show_finished_central_panel(&mut self, ui: &mut egui::Ui) {
+        let theme = Theme::get_selected();
+
         ui.label(format!(
-            "Finished installing into {}",
+            "Finished installing {} into {}",
+            self.game_config.as_ref().unwrap().name,
             self.select_location_state.install_location
         ));
+
+        ui.add_space(10.0);
+        ui.colored_label(theme.highlight.fg_high_contrast.0, "Running the game");
+        ui.label("1. Open a terminal in the game folder");
+        ui.label("2. Run the game using:");
+        ui.code(format!(
+            "    {} config.toml",
+            self.game_config.as_ref().unwrap().name.to_lowercase()
+        ));
+        ui.label("3. Edit your AI");
+
+        ui.add_space(10.0);
+        ui.colored_label(theme.highlight.fg_high_contrast.0, "Uninstalling");
+        ui.label("Simply remove the game folder at");
+        ui.label(&self.select_location_state.install_location);
     }
 
     fn show_top_panel(&mut self, ui: &mut egui::Ui) {
