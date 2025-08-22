@@ -72,7 +72,7 @@ impl GameInstallApp {
     }
 
     fn new(cc: &eframe::CreationContext<'_>) -> Self {
-        crate::theme::Theme::get_selected().apply(&cc.egui_ctx);
+        Theme::get_selected().apply(&cc.egui_ctx);
 
         let mut fonts = egui::FontDefinitions::default();
         egui_phosphor::add_to_fonts(&mut fonts, egui_phosphor::Variant::Regular);
@@ -391,7 +391,7 @@ impl GameInstallApp {
 
 impl eframe::App for GameInstallApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        ctx.set_pixels_per_point(2.0);
+        ctx.set_zoom_factor(1.5);
         egui::TopBottomPanel::top("heading").show(ctx, |ui| self.show_top_panel(ui));
         egui::TopBottomPanel::bottom("nav_buttons").show(ctx, |ui| self.show_bottom_panel(ui));
         egui::CentralPanel::default().show(ctx, |ui| self.show_central_panel(ui));
