@@ -294,12 +294,17 @@ impl GameInstallApp {
         ui.add_space(10.0);
         ui.colored_label(theme.highlight.fg_high_contrast.0, "Running the game");
         ui.label("1. Open a terminal in the game folder");
-        ui.label("2. Run the game using:");
+        ui.label("2. Activate the virtual environment:");
+        #[cfg(target_os = "windows")]
+        ui.code(".venv\\Scripts\\activate");
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
+        ui.code("source .venv/bin/activate");
+        ui.label("3. Run the game using:");
         ui.code(format!(
-            "    {} config.toml",
+            "{} config.toml",
             self.game_config.as_ref().unwrap().name.to_lowercase()
         ));
-        ui.label("3. Edit your AI");
+        ui.label("4. Edit your AI");
 
         ui.add_space(10.0);
         ui.colored_label(theme.highlight.fg_high_contrast.0, "Uninstalling");
