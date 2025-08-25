@@ -84,6 +84,12 @@ h1 {
     background: var(--red-6);
 }
 
+.tab-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
 .download-button {
     background: var(--red-4);
     border: 1px solid var(--red-8);
