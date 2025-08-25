@@ -5,7 +5,7 @@ version = "3.12"
 venv = "single"
 
 [game]
-url = "https://github.com/jl-wynen/supremacy.git"
+url = "https://github.com/nvaytet/supremacy.git"
 base_config_in_repo = "config.toml"
 launch_args = ["supremacy", "{config}"]
 
